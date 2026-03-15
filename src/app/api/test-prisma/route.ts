@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from 'prisma-client/index';
+import { PrismaClient } from '@prisma/client';
 
 export const runtime = 'nodejs';
 

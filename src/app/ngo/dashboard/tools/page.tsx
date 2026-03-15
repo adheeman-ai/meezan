@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { toPng } from 'html-to-image';
@@ -45,7 +45,7 @@ const POSTER_TEMPLATES = [
     }
 ];
 
-export default function CampaignToolsPage() {
+function CampaignToolsContent() {
     const searchParams = useSearchParams();
     const isAdminMode = searchParams.get('admin') === 'true';
 
@@ -505,5 +505,13 @@ export default function CampaignToolsPage() {
                 </button>
             </div>
         </div>
+    );
+}
+
+export default function CampaignToolsPage() {
+    return (
+        <Suspense fallback={<div style={{ padding: '100px', textAlign: 'center' }}>Loading...</div>}>
+            <CampaignToolsContent />
+        </Suspense>
     );
 }
