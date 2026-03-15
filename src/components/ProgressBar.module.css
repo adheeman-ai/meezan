@@ -1,0 +1,72 @@
+.wrapper {
+    width: 100%;
+}
+
+.barContainer {
+    height: 12px;
+    background: #E5E7EB;
+    border-radius: var(--radius-full);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: var(--space-3);
+}
+
+.verifiedBar {
+    height: 100%;
+    background: var(--color-primary);
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: width 1s ease-out;
+}
+
+.pendingBar {
+    height: 100%;
+    background: repeating-linear-gradient(45deg,
+            var(--color-accent),
+            var(--color-accent) 10px,
+            var(--color-accent-light) 10px,
+            var(--color-accent-light) 20px);
+    position: absolute;
+    top: 0;
+    transition: width 1s ease-out;
+    opacity: 0.8;
+}
+
+.stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    font-size: var(--text-xs);
+    font-family: var(--font-mono);
+}
+
+.statGroup {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.verifiedDot {
+    background: var(--color-primary);
+}
+
+.pendingDot {
+    background: var(--color-accent);
+}
+
+.label {
+    color: var(--color-text-secondary);
+}
+
+.goalLabel {
+    margin-left: auto;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}

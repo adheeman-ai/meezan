@@ -1,0 +1,170 @@
+.card {
+    padding: 0 !important;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.imageWrapper {
+    position: relative;
+    height: 200px;
+    width: 100%;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.categoryBadge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: var(--dal-blue);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.urgentBadge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: var(--kangri-red);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    animation: pulse 2s infinite;
+}
+
+.content {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.ngoName {
+    font-size: 0.875rem;
+    color: var(--dal-blue);
+    font-weight: 600;
+}
+
+.verifiedTick {
+    color: #3B82F6;
+    font-size: 16px;
+}
+
+.districtBadge {
+    font-size: 0.75rem;
+    background: var(--dal-blue-glass);
+    color: var(--dal-blue-dark);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.title {
+    font-size: 1.5rem;
+    color: var(--text-main);
+    margin-bottom: 12px;
+    line-height: 1.3;
+}
+
+.description {
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.progressSection {
+    margin-top: auto;
+    margin-bottom: 24px;
+}
+
+.progressStats {
+    margin-top: 12px;
+}
+
+.raisedInfo {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.verifiedAmount {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dal-blue);
+}
+
+.slash {
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
+.goalAmount {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.footer {
+    padding-top: 20px;
+    border-top: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footerInfo {
+    display: flex;
+    gap: 16px;
+}
+
+.footerItem {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+}
+
+.footerItem b {
+    color: var(--text-main);
+    font-size: 0.875rem;
+}
+
+.cta {
+    width: 120px;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

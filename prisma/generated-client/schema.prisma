@@ -1,0 +1,174 @@
+generator client {
+  provider   = "prisma-client-js"
+  output     = "./generated-client"
+  engineType = "binary"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model District {
+  id        Int           @id @default(autoincrement())
+  name      String        @unique
+  isCapital Boolean       @default(false)
+  createdAt DateTime      @default(now())
+  cases     CaseRequest[]
+  ngos      Ngo[]
+}
+
+model CaseRequest {
+  id             Int        @id @default(autoincrement())
+  title          String
+  description    String
+  amount         Int
+  category       Category
+  districtId     Int
+  documents      String     @default("[]")
+  status         CaseStatus @default(AVAILABLE)
+  submittedAt    DateTime   @default(now())
+  adoptedByNgoId Int?
+  campaignId     Int?       @unique
+  adoptedByNgo   Ngo?       @relation("NgoAdoptedCases", fields: [adoptedByNgoId], references: [id])
+  district       District   @relation(fields: [districtId], references: [id])
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  NGO_PARTNER
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String
+  role     UserRole @default(NGO_PARTNER)
+
+  // Link to NGO if role is NGO_PARTNER
+  ngo   Ngo? @relation(fields: [ngoId], references: [id])
+  ngoId Int? @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Ngo {
+  id                 Int       @id @default(autoincrement())
+  name               String
+  nameUrdu           String?
+  registrationNumber String    @unique
+  districtId         Int
+  categories         String
+  email              String    @unique
+  phone              String
+  address            String
+  website            String?
+  bankAccount        String
+  ifsc               String
+  accountHolder      String
+  bankName           String
+  upiId              String?
+  status             NgoStatus @default(PENDING)
+  rejectionReason    String?
+  documents          String    @default("{}")
+  createdAt          DateTime  @default(now())
+  verifiedAt         DateTime?
+  updatedAt          DateTime  @updatedAt
+
+  // Relations
+  user            User?
+  campaigns       Campaign[]
+  campaignUpdates CampaignUpdate[]
+  adoptedCases    CaseRequest[]    @relation("NgoAdoptedCases")
+  district        District         @relation(fields: [districtId], references: [id])
+}
+
+model Campaign {
+  id             Int              @id @default(autoincrement())
+  ngoId          Int
+  title          String
+  description    String
+  category       Category
+  goalAmount     Int
+  verifiedAmount Int              @default(0)
+  pendingAmount  Int              @default(0)
+  deadline       DateTime?
+  imageUrl       String?
+  upiId          String
+  bankAccount    String
+  ifsc           String
+  accountHolder  String
+  bankName       String
+  status         CampaignStatus   @default(PENDING_REVIEW)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  closedAt       DateTime?
+  ngo            Ngo              @relation(fields: [ngoId], references: [id])
+  updates        CampaignUpdate[]
+  donations      Donation[]
+}
+
+model Donation {
+  id            Int            @id @default(autoincrement())
+  campaignId    Int
+  donorName     String?
+  amount        Int
+  utrLast4      String
+  paymentTime   DateTime
+  screenshotUrl String?
+  status        DonationStatus @default(PENDING)
+  verifiedAt    DateTime?
+  reportedAt    DateTime       @default(now())
+  campaign      Campaign       @relation(fields: [campaignId], references: [id])
+
+  @@index([campaignId, status])
+  @@index([utrLast4])
+}
+
+model CampaignUpdate {
+  id         Int      @id @default(autoincrement())
+  campaignId Int
+  ngoId      Int
+  content    String
+  createdAt  DateTime @default(now())
+  campaign   Campaign @relation(fields: [campaignId], references: [id])
+  ngo        Ngo      @relation(fields: [ngoId], references: [id])
+}
+
+enum NgoStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum CampaignStatus {
+  PENDING_REVIEW
+  ACTIVE
+  URGENT
+  GOAL_MET
+  CLOSED
+  REJECTED
+}
+
+enum DonationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+  FLAGGED
+}
+
+enum Category {
+  MEDICAL
+  EDUCATION
+  DISASTER
+  WOMEN
+  ORPHAN
+  LIVELIHOOD
+  ENVIRONMENT
+}
+
+enum CaseStatus {
+  AVAILABLE
+  ADOPTED
+  REJECTED
+}

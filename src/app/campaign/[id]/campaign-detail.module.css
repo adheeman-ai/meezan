@@ -1,0 +1,693 @@
+.page {
+    min-height: 100vh;
+}
+
+.hero {
+    height: 400px;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 60px;
+    overflow: hidden;
+}
+
+.heroBg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.heroBg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.heroOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+.heroContent {
+    position: relative;
+    z-index: 10;
+    color: white;
+}
+
+.heroMeta {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.categoryBadge {
+    background: var(--dal-blue);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.districtBadge {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.title {
+    font-size: 3.5rem;
+    margin-bottom: 8px;
+    line-height: 1.1;
+}
+
+.ngoName {
+    font-size: 1.125rem;
+    opacity: 0.9;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 60px;
+    padding: 60px 0 100px;
+}
+
+.sectionTitle {
+    font-size: 2rem;
+    color: var(--dal-blue);
+    margin-bottom: 24px;
+}
+
+.richText {
+    line-height: 1.8;
+    color: var(--text-main);
+    font-size: 1.1rem;
+}
+
+.richText p {
+    margin-bottom: 20px;
+}
+
+.richText ul {
+    margin-bottom: 20px;
+    padding-left: 20px;
+}
+
+.richText li {
+    margin-bottom: 8px;
+}
+
+.ngoSection {
+    margin-top: 60px;
+}
+
+.ngoInfo {
+    padding: 32px;
+}
+
+.ngoHeader {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.ngoAvatar {
+    width: 64px;
+    height: 64px;
+    background: var(--dal-blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.sidebar {
+    position: relative;
+}
+
+.stickySidebar {
+    position: sticky;
+    top: 100px;
+}
+
+.donationCard {
+    padding: 32px;
+}
+
+.raisedAmount {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.amount {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--dal-blue);
+}
+
+.goal {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.miniStats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.miniStats b {
+    color: var(--text-main);
+}
+
+.paymentTabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 32px 0 24px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.tab {
+    padding: 12px;
+    background: none;
+    border: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.activeTab {
+    color: var(--dal-blue);
+    border-bottom: 2px solid var(--dal-blue);
+}
+
+.presets {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 12px 0 24px;
+}
+
+.presetBtn {
+    padding: 10px;
+    background: white;
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.selectedPreset {
+    border-color: var(--dal-blue);
+    background: var(--dal-blue-glass);
+    color: var(--dal-blue);
+}
+
+.amountHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.customInputWrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 1px solid var(--glass-border);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.customInputWrapper input {
+    border: none;
+    outline: none;
+    width: 80px;
+    font-family: var(--font-mono);
+    color: var(--dal-blue);
+}
+
+.upiMainBox {
+    background: var(--snow-white);
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.upiInfoRow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.8125rem;
+    margin-bottom: 16px;
+}
+
+.payLabel {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.copyBtnIcon {
+    background: none;
+    border: none;
+    color: var(--dal-blue);
+    cursor: pointer;
+    display: flex;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.copyBtnIcon:hover {
+    background: var(--dal-blue-glass);
+}
+
+.upiGrid {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    padding: 0 10px;
+}
+
+.upiAppIcon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.upiAppIcon:hover {
+    border-color: var(--dal-blue);
+    transform: scale(1.1);
+}
+
+.upiAppIcon img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.qrSectionMini {
+    text-align: center;
+    padding: 16px;
+}
+
+.qrWrapper {
+    display: inline-block;
+    background: white;
+    padding: 8px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 8px;
+}
+
+.bankInfoGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.bankField {
+    background: white;
+    border: 1px solid var(--glass-border);
+    padding: 12px 16px;
+    border-radius: 8px;
+}
+
+.bankField label {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    font-weight: 700;
+}
+
+.fieldValue {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fieldValue span {
+    font-weight: 600;
+}
+
+.fieldValue button,
+.copyBtnSmall {
+    background: var(--dal-blue-glass);
+    border: none;
+    color: var(--dal-blue);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.fieldValue button:hover,
+.copyBtnSmall:hover {
+    background: var(--dal-blue);
+    color: white;
+}
+
+.bankAppsSection {
+    margin-top: 20px;
+}
+
+.bankAppsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+    padding: 0 4px;
+}
+
+.labelSmall {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-main);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.hint {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-style: italic;
+}
+
+.bankAppGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    padding: 8px 0;
+}
+
+.bankAppBtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 80px;
+}
+
+.bankAppBtn:hover {
+    transform: translateY(-4px);
+}
+
+.bankAppBtn img {
+    width: 56px;
+    height: 56px;
+    padding: 12px;
+    background: white;
+    border: 1.5px solid var(--glass-border);
+    border-radius: 50%;
+    object-fit: contain;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.bankAppBtn:hover img {
+    border-color: var(--dal-blue);
+    box-shadow: 0 8px 20px rgba(15, 52, 96, 0.15);
+    transform: scale(1.05);
+}
+
+.bankAppBtn span {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-main);
+    text-align: center;
+    width: 100%;
+}
+
+.reportSectionWrapper {
+    margin-top: 32px;
+}
+
+.reportSection {
+    padding: 24px;
+    background: linear-gradient(135deg, rgba(201, 168, 76, 0.05), rgba(201, 168, 76, 0.1));
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    border-radius: 16px;
+    text-align: center;
+}
+
+.reportHint {
+    font-size: 0.85rem;
+    color: var(--text-secondary, #475569);
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.reportBtn {
+    position: relative;
+    width: 100%;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, var(--accent, #C9A84C), var(--accent-dark, #A8882A));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(201, 168, 76, 0.25);
+}
+
+.reportBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(201, 168, 76, 0.4);
+}
+
+.btnShine {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
+    transform: skewX(-20deg);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% {
+        left: -100%;
+    }
+
+    20% {
+        left: 200%;
+    }
+
+    100% {
+        left: 200%;
+    }
+}
+
+.reportHelpSection {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.howToDonateBtn {
+    background: none;
+    border: none;
+    color: var(--primary, #0F3460);
+    font-size: 0.875rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+}
+
+.howToDonateBtn:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+.howToModal {
+    max-width: 480px !important;
+}
+
+.howToSteps {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.howToStepItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: var(--bg-soft, #F8FAFC);
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.stepNum {
+    width: 28px;
+    height: 28px;
+    background: var(--accent, #C9A84C);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.howToStepItem p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--text-primary, #0F172A);
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal {
+    width: 100%;
+    max-width: 500px;
+    padding: 40px;
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.formGroup {
+    margin-bottom: 24px;
+}
+
+.formGroup label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.formGroup input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    outline: none;
+}
+
+@media (max-width: 1024px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 2.5rem;
+    }
+
+    .hero {
+        height: 300px;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 1024px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        order: -1;
+    }
+
+    .stickyContent {
+        position: static;
+    }
+
+    .heroTitle {
+        font-size: var(--text-3xl);
+    }
+}
