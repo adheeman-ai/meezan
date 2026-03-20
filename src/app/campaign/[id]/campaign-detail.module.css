@@ -81,6 +81,83 @@
     padding: 60px 0 100px;
 }
 
+/* === STICKY MOBILE ACTION BAR === */
+.stickyActionBar {
+    display: none; /* hidden on desktop */
+}
+
+@media (max-width: 1024px) {
+    .stickyActionBar {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1100;
+        background: white;
+        border-top: 1px solid rgba(15, 52, 96, 0.12);
+        box-shadow: 0 -8px 32px rgba(15, 52, 96, 0.12);
+        padding: 12px 16px;
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+        gap: 10px;
+        align-items: center;
+    }
+
+    .stickyActionBar .donateBtn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 14px 16px;
+        background: linear-gradient(135deg, var(--primary, #0F3460), var(--primary-mid, #1A4B7C));
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .stickyActionBar .reportBtnMobile {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 14px 12px;
+        background: linear-gradient(135deg, var(--accent, #C9A84C), var(--accent-dark, #A8882A));
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .stickyActionBar .shareBtn {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--gray-100, #F1F5F9);
+        border: 1px solid var(--gray-200, #E2E8F0);
+        border-radius: 12px;
+        cursor: pointer;
+        color: var(--primary, #0F3460);
+        font-size: 1.25rem;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+    }
+}
+
 .sectionTitle {
     font-size: 2rem;
     color: var(--dal-blue);
@@ -642,26 +719,6 @@
     outline: none;
 }
 
-@media (max-width: 1024px) {
-    .layout {
-        grid-template-columns: 1fr;
-    }
-
-    .sidebar {
-        order: -1;
-    }
-}
-
-@media (max-width: 768px) {
-    .title {
-        font-size: 2.5rem;
-    }
-
-    .hero {
-        height: 300px;
-    }
-}
-
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -677,17 +734,62 @@
 @media (max-width: 1024px) {
     .layout {
         grid-template-columns: 1fr;
+        padding: 32px 0 100px; /* extra bottom padding for sticky bar */
     }
 
+    /* Hide full sidebar on mobile — sticky bar replaces it */
     .sidebar {
-        order: -1;
+        display: none;
     }
 
-    .stickyContent {
-        position: static;
+    .mainContent {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: clamp(1.8rem, 7vw, 2.5rem);
     }
 
-    .heroTitle {
-        font-size: var(--text-3xl);
+    .hero {
+        height: 280px;
+        padding-bottom: 28px;
+    }
+
+    .heroMeta {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .ngoName {
+        font-size: 0.95rem;
+    }
+
+    .storySection {
+        padding-bottom: 0;
+    }
+
+    .richText {
+        font-size: 1rem;
+    }
+
+    .ngoInfo {
+        padding: 20px;
+    }
+
+    .modal {
+        padding: 24px;
+        margin: 16px;
+        max-width: calc(100vw - 32px) !important;
+        border-radius: 20px;
+    }
+
+    .modalOverlay {
+        align-items: flex-end; /* bottom sheet feel on mobile */
+    }
+
+    .howToModal {
+        max-width: 100% !important;
     }
 }

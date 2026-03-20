@@ -6,6 +6,14 @@ import ProgressBar from '@/components/ProgressBar';
 import Button from '@/components/Button';
 import { QRCodeCanvas } from 'qrcode.react';
 import styles from './campaign-detail.module.css';
+import {
+    BANK_APPS,
+    openBankApp,
+    getGPayLink,
+    getPhonePeLink,
+    getPaytmLink,
+    detectPlatform,
+} from '@/lib/deeplinks';
 
 const DUMMY_CAMPAIGN = {
     id: '1',
@@ -76,6 +84,44 @@ export default function CampaignDetailPage() {
                 <div className={styles.layout}>
                     {/* Content Column */}
                     <div className={styles.mainContent}>
+                        {/* Mobile-only campaign progress summary */}
+                        <div style={{
+                            display: 'none',
+                        }} className="mobile-campaign-summary">
+                            {/* This is intentionally empty; the sticky bar handles actions */}
+                        </div>
+
+                        {/* Mobile campaign stats — shown only on mobile above the story */}
+                        <div style={{
+                            background: 'white',
+                            border: '1px solid #E2E8F0',
+                            borderRadius: '16px',
+                            padding: '20px',
+                            marginBottom: '24px',
+                        }} className="md-hidden">
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                                <div>
+                                    <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0F3460', fontFamily: 'Space Mono, monospace' }}>
+                                        ₹{((DUMMY_CAMPAIGN.verifiedAmount + DUMMY_CAMPAIGN.pendingAmount) / 100).toLocaleString()}
+                                    </div>
+                                    <div style={{ fontSize: '0.8rem', color: '#94A3B8' }}>
+                                        raised of ₹{(DUMMY_CAMPAIGN.goalAmount / 100).toLocaleString()}
+                                    </div>
+                                </div>
+                                <div style={{ textAlign: 'right' }}>
+                                    <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0F3460' }}>{DUMMY_CAMPAIGN.daysLeft}d</div>
+                                    <div style={{ fontSize: '0.8rem', color: '#94A3B8' }}>days left</div>
+                                </div>
+                            </div>
+                            <div style={{ height: '8px', background: '#F1F5F9', borderRadius: '4px', overflow: 'hidden', display: 'flex' }}>
+                                <div style={{ width: `${Math.round((DUMMY_CAMPAIGN.verifiedAmount / DUMMY_CAMPAIGN.goalAmount) * 100)}%`, background: 'linear-gradient(90deg, #16A34A, #22C55E)', borderRadius: '4px 0 0 4px' }} />
+                                <div style={{ width: `${Math.round((DUMMY_CAMPAIGN.pendingAmount / DUMMY_CAMPAIGN.goalAmount) * 100)}%`, background: 'linear-gradient(90deg, #D97706, #FBBF24)' }} />
+                            </div>
+                            <div style={{ marginTop: '8px', fontSize: '0.8rem', color: '#64748B' }}>
+                                {DUMMY_CAMPAIGN.donorCount} donors · {Math.round(((DUMMY_CAMPAIGN.verifiedAmount + DUMMY_CAMPAIGN.pendingAmount) / DUMMY_CAMPAIGN.goalAmount) * 100)}% funded
+                            </div>
+                        </div>
+
                         <section className={styles.storySection}>
                             <h2 className={`${styles.sectionTitle} font-heading`}>Campaign Story</h2>
                             <div
@@ -174,9 +220,52 @@ export default function CampaignDetailPage() {
                                                 </div>
 
                                                 <div className={styles.upiGrid}>
-                                                    <a href={`upi://pay?pa=${DUMMY_CAMPAIGN.upiId}&pn=${encodeURIComponent(DUMMY_CAMPAIGN.ngoName)}&am=${selectedAmount}&cu=INR&mc=0000`} className={styles.upiAppIcon} title="Pay with GPay"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="GPay" /></a>
-                                                    <a href={`phonepe://pay?pa=${DUMMY_CAMPAIGN.upiId}&pn=${encodeURIComponent(DUMMY_CAMPAIGN.ngoName)}&am=${selectedAmount}&cu=INR&mc=0000`} className={styles.upiAppIcon} title="Pay with PhonePe"><img src="https://cdn.simpleicons.org/phonepe/5f259f" alt="PhonePe" /></a>
-                                                    <a href={`paytmmp://pay?pa=${DUMMY_CAMPAIGN.upiId}&pn=${encodeURIComponent(DUMMY_CAMPAIGN.ngoName)}&am=${selectedAmount}&cu=INR&mc=0000`} className={styles.upiAppIcon} title="Pay with Paytm"><img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" /></a>
+                                                    {/* GPay */}
+                                                    <a
+                                                        href={getGPayLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount })}
+                                                        className={styles.upiAppIcon}
+                                                        title="Pay with GPay"
+                                                        onClick={(e) => {
+                                                            // On Android, intent:// links must be set via location.href, not <a>
+                                                            const platform = detectPlatform();
+                                                            if (platform === 'android') {
+                                                                e.preventDefault();
+                                                                window.location.href = getGPayLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount });
+                                                            }
+                                                        }}
+                                                    >
+                                                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="GPay" />
+                                                    </a>
+                                                    {/* PhonePe */}
+                                                    <a
+                                                        href={getPhonePeLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount })}
+                                                        className={styles.upiAppIcon}
+                                                        title="Pay with PhonePe"
+                                                        onClick={(e) => {
+                                                            const platform = detectPlatform();
+                                                            if (platform === 'android') {
+                                                                e.preventDefault();
+                                                                window.location.href = getPhonePeLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount });
+                                                            }
+                                                        }}
+                                                    >
+                                                        <img src="https://cdn.simpleicons.org/phonepe/5f259f" alt="PhonePe" />
+                                                    </a>
+                                                    {/* Paytm */}
+                                                    <a
+                                                        href={getPaytmLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount })}
+                                                        className={styles.upiAppIcon}
+                                                        title="Pay with Paytm"
+                                                        onClick={(e) => {
+                                                            const platform = detectPlatform();
+                                                            if (platform === 'android') {
+                                                                e.preventDefault();
+                                                                window.location.href = getPaytmLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount });
+                                                            }
+                                                        }}
+                                                    >
+                                                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" />
+                                                    </a>
                                                 </div>
                                             </div>
 
@@ -249,96 +338,17 @@ export default function CampaignDetailPage() {
                                                     <p className={styles.hint}>Copy details before opening the app</p>
                                                 </div>
                                                 <div className={styles.bankAppGrid}>
-                                                    <button
-                                                        className={styles.bankAppBtn}
-                                                        onClick={() => {
-                                                            const start = Date.now();
-                                                            window.location.href = "jkbankmpay://";
-                                                            setTimeout(() => {
-                                                                if (Date.now() - start < 2000) {
-                                                                    window.open("https://play.google.com/store/apps/details?id=com.jkbank.mobilebanking", "_blank");
-                                                                }
-                                                            }, 1500);
-                                                        }}
-                                                    >
-                                                        <img src="/banks/jkbank.svg" alt="JK Bank" />
-                                                        <span>JK Bank</span>
-                                                    </button>
-                                                    <button
-                                                        className={styles.bankAppBtn}
-                                                        onClick={() => {
-                                                            const start = Date.now();
-                                                            window.location.href = "hdfcbank://";
-                                                            setTimeout(() => {
-                                                                if (Date.now() - start < 2000) {
-                                                                    window.open("https://play.google.com/store/apps/details?id=com.snapwork.hdfc", "_blank");
-                                                                }
-                                                            }, 1500);
-                                                        }}
-                                                    >
-                                                        <img src="/banks/hdfc.svg" alt="HDFC" />
-                                                        <span>HDFC</span>
-                                                    </button>
-                                                    <button
-                                                        className={styles.bankAppBtn}
-                                                        onClick={() => {
-                                                            const start = Date.now();
-                                                            window.location.href = "yono://";
-                                                            setTimeout(() => {
-                                                                if (Date.now() - start < 2000) {
-                                                                    window.open("https://play.google.com/store/apps/details?id=com.sbi.lotusintouch", "_blank");
-                                                                }
-                                                            }, 1500);
-                                                        }}
-                                                    >
-                                                        <img src="/banks/sbi.svg" alt="SBI" />
-                                                        <span>SBI</span>
-                                                    </button>
-                                                    <button
-                                                        className={styles.bankAppBtn}
-                                                        onClick={() => {
-                                                            const start = Date.now();
-                                                            window.location.href = "axis-mobile://";
-                                                            setTimeout(() => {
-                                                                if (Date.now() - start < 2000) {
-                                                                    window.open("https://play.google.com/store/apps/details?id=com.axis.mobile", "_blank");
-                                                                }
-                                                            }, 1500);
-                                                        }}
-                                                    >
-                                                        <img src="/banks/axisbank.svg" alt="Axis Bank" />
-                                                        <span>Axis Bank</span>
-                                                    </button>
-                                                    <button
-                                                        className={styles.bankAppBtn}
-                                                        onClick={() => {
-                                                            const start = Date.now();
-                                                            window.location.href = "icicibank://";
-                                                            setTimeout(() => {
-                                                                if (Date.now() - start < 2000) {
-                                                                    window.open("https://play.google.com/store/apps/details?id=com.csam.icici.bank.imobile", "_blank");
-                                                                }
-                                                            }, 1500);
-                                                        }}
-                                                    >
-                                                        <img src="/banks/icici.svg" alt="ICICI" />
-                                                        <span>ICICI Bank</span>
-                                                    </button>
-                                                    <button
-                                                        className={styles.bankAppBtn}
-                                                        onClick={() => {
-                                                            const start = Date.now();
-                                                            window.location.href = "kotakbank://";
-                                                            setTimeout(() => {
-                                                                if (Date.now() - start < 2000) {
-                                                                    window.open("https://play.google.com/store/apps/details?id=com.msf.kbank.mobile", "_blank");
-                                                                }
-                                                            }, 1500);
-                                                        }}
-                                                    >
-                                                        <img src="/banks/kotak.svg" alt="Kotak" />
-                                                        <span>Kotak Bank</span>
-                                                    </button>
+                                                    {BANK_APPS.map((bank) => (
+                                                        <button
+                                                            key={bank.name}
+                                                            className={styles.bankAppBtn}
+                                                            onClick={() => openBankApp(bank)}
+                                                            title={`Open ${bank.name}`}
+                                                        >
+                                                            <img src={bank.logo} alt={bank.name} />
+                                                            <span>{bank.name}</span>
+                                                        </button>
+                                                    ))}
                                                 </div>
                                             </div>
                                         </div>
@@ -451,6 +461,44 @@ export default function CampaignDetailPage() {
                     </div>
                 </div>
             )}
+
+            {/* ===== STICKY MOBILE ACTION BAR ===== */}
+            <div className={styles.stickyActionBar}>
+                <a
+                    href={`upi://pay?pa=${DUMMY_CAMPAIGN.upiId}&pn=${encodeURIComponent(DUMMY_CAMPAIGN.ngoName)}&am=1000&cu=INR`}
+                    className={styles.donateBtn}
+                >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 21.59l-1.42-1.3C5.4 15.36 2 12.27 2 8.5 2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.58 11.79L12 21.59z" />
+                    </svg>
+                    Donate
+                </a>
+                <button
+                    className={styles.reportBtnMobile}
+                    onClick={() => setReporting(true)}
+                >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Report
+                </button>
+                <button
+                    className={styles.shareBtn}
+                    onClick={() => {
+                        if (navigator.share) {
+                            navigator.share({ title: DUMMY_CAMPAIGN.title, url: window.location.href });
+                        } else {
+                            navigator.clipboard.writeText(window.location.href);
+                        }
+                    }}
+                    title="Share"
+                >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                    </svg>
+                </button>
+            </div>
         </div>
     );
 }

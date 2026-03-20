@@ -665,10 +665,38 @@ h4 {
   .section-sm {
     padding: var(--space-12) 0;
   }
+
+  /* All buttons should have minimum tap target size on mobile */
+  button, a[role="button"], .btn-primary, .btn-accent, .btn-ghost {
+    min-height: 44px;
+  }
 }
 
 @media (max-width: 480px) {
   .container {
     padding: 0 var(--space-4);
+  }
+}
+
+/* === MOBILE UTILITY CLASSES === */
+/* Show only on mobile (< 1024px) */
+.md-hidden {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .md-hidden {
+    display: block;
+  }
+}
+
+/* Hide on mobile */
+.mobile-hidden {
+  display: block;
+}
+
+@media (max-width: 1024px) {
+  .mobile-hidden {
+    display: none;
   }
 }
