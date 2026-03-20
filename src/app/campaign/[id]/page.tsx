@@ -55,6 +55,7 @@ export default function CampaignDetailPage() {
     const [selectedAmount, setSelectedAmount] = useState(1000);
     const [reporting, setReporting] = useState(false);
     const [showHowToPopup, setShowHowToPopup] = useState(false);
+    const [showPaymentSheet, setShowPaymentSheet] = useState(false);
 
     const presets = [500, 1000, 2000, 5000];
 
@@ -462,17 +463,145 @@ export default function CampaignDetailPage() {
                 </div>
             )}
 
+            {/* ===== MOBILE PAYMENT BOTTOM SHEET ===== */}
+            {showPaymentSheet && (
+                <div className={styles.modalOverlay} onClick={(e) => { if (e.target === e.currentTarget) setShowPaymentSheet(false); }}>
+                    <div className={styles.paymentSheet}>
+                        {/* Sheet handle + header */}
+                        <div className={styles.sheetHandle} />
+                        <div className={styles.modalHeader}>
+                            <h2 className="font-heading" style={{ fontSize: '1.4rem' }}>Donate to this Campaign</h2>
+                            <button className={styles.closeBtn} onClick={() => setShowPaymentSheet(false)}>×</button>
+                        </div>
+
+                        {/* Amount selector */}
+                        <div className={styles.amountInput}>
+                            <div className={styles.amountHeader}>
+                                <p className={styles.label}>Select Amount</p>
+                                <div className={styles.customInputWrapper}>
+                                    <span>₹</span>
+                                    <input
+                                        type="number"
+                                        value={selectedAmount}
+                                        onChange={(e) => setSelectedAmount(Number(e.target.value))}
+                                        placeholder="500"
+                                    />
+                                </div>
+                            </div>
+                            <div className={styles.presets}>
+                                {presets.map(amt => (
+                                    <button
+                                        key={amt}
+                                        className={`${styles.presetBtn} ${selectedAmount === amt ? styles.selectedPreset : ''}`}
+                                        onClick={() => setSelectedAmount(amt)}
+                                    >
+                                        ₹{amt.toLocaleString()}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* UPI / Bank tabs */}
+                        <div className={styles.paymentTabs}>
+                            <button className={`${styles.tab} ${paymentTab === 'upi' ? styles.activeTab : ''}`} onClick={() => setPaymentTab('upi')}>UPI</button>
+                            <button className={`${styles.tab} ${paymentTab === 'bank' ? styles.activeTab : ''}`} onClick={() => setPaymentTab('bank')}>Bank Transfer</button>
+                        </div>
+
+                        {paymentTab === 'upi' ? (
+                            <div className={styles.upiPayment}>
+                                <div className={styles.upiMainBox}>
+                                    <div className={styles.upiInfoRow}>
+                                        <span className={styles.payLabel}>UPI ID:</span>
+                                        <span className="font-mono">{DUMMY_CAMPAIGN.upiId}</span>
+                                        <button className={styles.copyBtnIcon} onClick={() => navigator.clipboard.writeText(DUMMY_CAMPAIGN.upiId)}>
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                                        </button>
+                                    </div>
+                                    <div className={styles.upiGrid}>
+                                        <a href={getGPayLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount })} className={styles.upiAppIcon} title="Pay with GPay"
+                                            onClick={(e) => { if (detectPlatform() === 'android') { e.preventDefault(); window.location.href = getGPayLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount }); } }}>
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="GPay" />
+                                        </a>
+                                        <a href={getPhonePeLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount })} className={styles.upiAppIcon} title="Pay with PhonePe"
+                                            onClick={(e) => { if (detectPlatform() === 'android') { e.preventDefault(); window.location.href = getPhonePeLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount }); } }}>
+                                            <img src="https://cdn.simpleicons.org/phonepe/5f259f" alt="PhonePe" />
+                                        </a>
+                                        <a href={getPaytmLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount })} className={styles.upiAppIcon} title="Pay with Paytm"
+                                            onClick={(e) => { if (detectPlatform() === 'android') { e.preventDefault(); window.location.href = getPaytmLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount }); } }}>
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" />
+                                        </a>
+                                    </div>
+                                </div>
+                                <div className={styles.qrSectionMini}>
+                                    <div className={styles.qrWrapper}>
+                                        <QRCodeCanvas
+                                            value={`upi://pay?pa=${DUMMY_CAMPAIGN.upiId}&pn=${encodeURIComponent(DUMMY_CAMPAIGN.ngoName)}&am=${selectedAmount}&cu=INR`}
+                                            size={120}
+                                            level="H"
+                                            includeMargin={true}
+                                        />
+                                    </div>
+                                    <p className={styles.qrHint}>Scan with any UPI app</p>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className={styles.bankPayment}>
+                                <div className={styles.bankInfoGrid}>
+                                    {[
+                                        { label: 'Account Holder', value: DUMMY_CAMPAIGN.bankDetails.holder },
+                                        { label: 'Bank Name', value: DUMMY_CAMPAIGN.bankDetails.name },
+                                        { label: 'Account Number', value: DUMMY_CAMPAIGN.bankDetails.account, mono: true, copy: true },
+                                        { label: 'IFSC Code', value: DUMMY_CAMPAIGN.bankDetails.ifsc, mono: true, copy: true },
+                                    ].map(f => (
+                                        <div key={f.label} className={styles.bankField}>
+                                            <label>{f.label}</label>
+                                            <div className={styles.fieldValue}>
+                                                <span className={f.mono ? 'font-mono' : ''}>{f.value}</span>
+                                                {f.copy && (
+                                                    <button className={styles.copyBtnSmall} onClick={() => navigator.clipboard.writeText(f.value)}>Copy</button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className={styles.bankAppsSection}>
+                                    <div className={styles.bankAppsHeader}>
+                                        <p className={styles.labelSmall}>Open Bank App</p>
+                                        <p className={styles.hint}>Copy details first</p>
+                                    </div>
+                                    <div className={styles.bankAppGrid}>
+                                        {BANK_APPS.map((bank) => (
+                                            <button key={bank.name} className={styles.bankAppBtn} onClick={() => openBankApp(bank)} title={`Open ${bank.name}`}>
+                                                <img src={bank.logo} alt={bank.name} />
+                                                <span>{bank.name}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        <div style={{ padding: '16px 0 8px' }}>
+                            <button className={styles.reportBtn} onClick={() => { setShowPaymentSheet(false); setReporting(true); }}>
+                                <span className={styles.btnShine}></span>
+                                Already paid? Report Your Donation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* ===== STICKY MOBILE ACTION BAR ===== */}
             <div className={styles.stickyActionBar}>
-                <a
-                    href={`upi://pay?pa=${DUMMY_CAMPAIGN.upiId}&pn=${encodeURIComponent(DUMMY_CAMPAIGN.ngoName)}&am=1000&cu=INR`}
+                <button
                     className={styles.donateBtn}
+                    onClick={() => setShowPaymentSheet(true)}
                 >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 21.59l-1.42-1.3C5.4 15.36 2 12.27 2 8.5 2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.58 11.79L12 21.59z" />
                     </svg>
                     Donate
-                </a>
+                </button>
                 <button
                     className={styles.reportBtnMobile}
                     onClick={() => setReporting(true)}
