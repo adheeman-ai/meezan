@@ -1,10 +1,11 @@
 /**
  * Deep Link Utilities for UPI and Bank Apps
  * 
- * Corrected implementation for 2024/2025:
- * - Android: Generic `intent://pay?` matches the standard UPI intent filters (removing the redundant `upi/` prefix).
- * - iOS: Paytm uses `paytm://` for UPI.
- * - iOS Banks: Updated schemes and forced /in/ (India) store links.
+ * Round 3 Refinements (2025):
+ * - Android: Using app-specific schemes inside intents (scheme=phonepe, scheme=paytmmp) 
+ *   to ensure the browser targets the correct handler precisely.
+ * - iOS: Simplified paths (paytmmp://pay? instead of upi/pay) and removed region locking.
+ * - JK Bank: Updated as per user provided mPay Delight+ IDs.
  */
 
 export type Platform = 'ios' | 'android' | 'desktop';
@@ -41,7 +42,7 @@ function buildUpiQuery(params: UpiParams): string {
 
 /**
  * Returns the deep link for Google Pay (GPay)
- * - Android Corrected: intent://pay? (matches standard upi://pay intent filter)
+ * Android: GPay is robust with scheme=upi
  */
 export function getGPayLink(params: UpiParams, platform = detectPlatform()): string {
     const query = buildUpiQuery(params);
@@ -52,7 +53,6 @@ export function getGPayLink(params: UpiParams, platform = detectPlatform()): str
         case 'ios':
             return `gpay://upi/pay?${query}`;
         case 'android':
-            // intent://pay? instead of intent://upi/pay?
             return `intent://pay?${query}#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;action=android.intent.action.VIEW;S.browser_fallback_url=${playStoreFallback};end`;
         default:
             return `upi://pay?${query}`;
@@ -61,6 +61,7 @@ export function getGPayLink(params: UpiParams, platform = detectPlatform()): str
 
 /**
  * Returns the deep link for PhonePe
+ * Android: Using scheme=phonepe to ensure it hits the app's native handler.
  */
 export function getPhonePeLink(params: UpiParams, platform = detectPlatform()): string {
     const query = buildUpiQuery(params);
@@ -69,9 +70,11 @@ export function getPhonePeLink(params: UpiParams, platform = detectPlatform()): 
     );
     switch (platform) {
         case 'ios':
-            return `phonepe://upi/pay?${query}`;
+            // Removed redundant upi/
+            return `phonepe://pay?${query}`;
         case 'android':
-            return `intent://pay?${query}#Intent;scheme=upi;package=com.phonepe.app;action=android.intent.action.VIEW;S.browser_fallback_url=${playStoreFallback};end`;
+            // Using phonepe:// as scheme inside intent
+            return `intent://pay?${query}#Intent;scheme=phonepe;package=com.phonepe.app;action=android.intent.action.VIEW;S.browser_fallback_url=${playStoreFallback};end`;
         default:
             return `upi://pay?${query}`;
     }
@@ -79,7 +82,7 @@ export function getPhonePeLink(params: UpiParams, platform = detectPlatform()): 
 
 /**
  * Returns the deep link for Paytm
- * Note: paytm:// is standard for UPI.
+ * Android: Using scheme=paytmmp for better resolution.
  */
 export function getPaytmLink(params: UpiParams, platform = detectPlatform()): string {
     const query = buildUpiQuery(params);
@@ -88,9 +91,11 @@ export function getPaytmLink(params: UpiParams, platform = detectPlatform()): st
     );
     switch (platform) {
         case 'ios':
-            return `paytm://upi/pay?${query}`;
+            // paytmmp://pay? is for UPI
+            return `paytmmp://pay?${query}`;
         case 'android':
-            return `intent://pay?${query}#Intent;scheme=upi;package=net.one97.paytm;action=android.intent.action.VIEW;S.browser_fallback_url=${playStoreFallback};end`;
+            // Using paytmmp:// as scheme inside intent
+            return `intent://pay?${query}#Intent;scheme=paytmmp;package=net.one97.paytm;action=android.intent.action.VIEW;S.browser_fallback_url=${playStoreFallback};end`;
         default:
             return `upi://pay?${query}`;
     }
@@ -113,16 +118,16 @@ export const BANK_APPS: BankApp[] = [
     {
         name: 'JK Bank',
         logo: '/banks/jkbank.svg',
-        iosScheme: 'jkbankmpay://',
-        iosStoreUrl: 'https://apps.apple.com/in/app/jk-bank-mpay-delight/id1459613776',
-        androidPackage: 'com.jkbank.mobilebanking',
-        androidStoreUrl: 'https://play.google.com/store/apps/details?id=com.jkbank.mobilebanking',
+        iosScheme: 'jkbmpay://', 
+        iosStoreUrl: 'https://apps.apple.com/app/jkb-mpay-delight/id6459356147',
+        androidPackage: 'com.lcode.jkbmpay',
+        androidStoreUrl: 'https://play.google.com/store/apps/details?id=com.lcode.jkbmpay&hl=en_IN',
     },
     {
         name: 'HDFC Bank',
         logo: '/banks/hdfc.svg',
         iosScheme: 'hdfcmobile://',
-        iosStoreUrl: 'https://apps.apple.com/in/app/hdfc-bank-mobilebankingapp/id438629283',
+        iosStoreUrl: 'https://apps.apple.com/app/hdfc-bank-mobilebankingapp/id438629283',
         androidPackage: 'com.snapwork.hdfc',
         androidStoreUrl: 'https://play.google.com/store/apps/details?id=com.snapwork.hdfc',
     },
@@ -130,7 +135,7 @@ export const BANK_APPS: BankApp[] = [
         name: 'SBI YONO',
         logo: '/banks/sbi.svg',
         iosScheme: 'yono://',
-        iosStoreUrl: 'https://apps.apple.com/in/app/yono-by-sbi/id1317638810',
+        iosStoreUrl: 'https://apps.apple.com/app/yono-by-sbi/id1317638810',
         androidPackage: 'com.sbi.lotusintouch',
         androidStoreUrl: 'https://play.google.com/store/apps/details?id=com.sbi.lotusintouch',
     },
@@ -138,7 +143,7 @@ export const BANK_APPS: BankApp[] = [
         name: 'Axis Bank',
         logo: '/banks/axisbank.svg',
         iosScheme: 'axismobile://',
-        iosStoreUrl: 'https://apps.apple.com/in/app/axis-mobile-banking-app/id1455024334',
+        iosStoreUrl: 'https://apps.apple.com/app/axis-mobile-banking-app/id1455024334',
         androidPackage: 'com.axis.mobile',
         androidStoreUrl: 'https://play.google.com/store/apps/details?id=com.axis.mobile',
     },
@@ -146,7 +151,7 @@ export const BANK_APPS: BankApp[] = [
         name: 'ICICI Bank',
         logo: '/banks/icici.svg',
         iosScheme: 'imobilepay://',
-        iosStoreUrl: 'https://apps.apple.com/in/app/imobile-pay-by-icici-bank/id427761633',
+        iosStoreUrl: 'https://apps.apple.com/app/imobile-pay-by-icici-bank/id427761633',
         androidPackage: 'com.csam.icici.bank.imobile',
         androidStoreUrl: 'https://play.google.com/store/apps/details?id=com.csam.icici.bank.imobile',
     },
@@ -154,7 +159,7 @@ export const BANK_APPS: BankApp[] = [
         name: 'Kotak Bank',
         logo: '/banks/kotak.svg',
         iosScheme: 'kotakbank://',
-        iosStoreUrl: 'https://apps.apple.com/in/app/kotak-mobile-banking-app/id880030949',
+        iosStoreUrl: 'https://apps.apple.com/app/kotak-mobile-banking-app/id880030949',
         androidPackage: 'com.msf.kbank.mobile',
         androidStoreUrl: 'https://play.google.com/store/apps/details?id=com.msf.kbank.mobile',
     },
@@ -165,6 +170,7 @@ export function openBankApp(bank: BankApp): void {
 
     if (platform === 'android') {
         const fallback = encodeURIComponent(bank.androidStoreUrl);
+        // Using main activity intent for launching
         const intentUri = `intent://#Intent;action=android.intent.action.VIEW;package=${bank.androidPackage};S.browser_fallback_url=${fallback};end`;
         window.location.href = intentUri;
     } else if (platform === 'ios') {
@@ -180,7 +186,7 @@ export function openBankApp(bank: BankApp): void {
             if (!document.hidden) {
                 window.location.href = bank.iosStoreUrl;
             }
-        }, 3000);
+        }, 2500); 
         
         document.addEventListener('visibilitychange', handleVisibilityChange);
     } else {
