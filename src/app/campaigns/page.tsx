@@ -58,7 +58,6 @@ export default function CampaignsPage() {
         return 0;
     });
 
-    if (loading) return <div className="container" style={{ padding: '100px 0', textAlign: 'center' }}>Loading campaigns...</div>;
     if (error) return <div className="container" style={{ padding: '100px 0', textAlign: 'center', color: 'red' }}>Error: {error}</div>;
 
     return (
@@ -107,45 +106,59 @@ export default function CampaignsPage() {
                     <p className={styles.count}>{filtered.length} campaign{filtered.length !== 1 ? 's' : ''} found</p>
                 </div>
                 <div className={styles.grid}>
-                    {filtered.map(c => {
-                        const raised = c.verifiedAmount + c.pendingAmount;
-                        const pct = Math.round((raised / c.goalAmount) * 100);
-                        return (
-                            <Link href={`/campaign/${c.id}`} key={c.id} className={styles.card}>
-                                <div className={styles.cardImg}>
-                                    <img src={c.imageUrl || 'https://images.unsplash.com/photo-1584515839997-d0efba2f2341'} alt={c.title} />
-                                    <div className={styles.cardImgOverlay} />
-                                    <div className={styles.cardTagsTop}>
-                                        {c.status === 'URGENT' && <span className={styles.urgentTag}>🔴 Urgent</span>}
-                                    </div>
-                                    <span className={styles.daysTag}>
-                                        {c.deadline ? `${Math.ceil((new Date(c.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}d left` : 'Ongoing'}
-                                    </span>
-                                </div>
+                    {loading ? (
+                        Array.from({ length: 6 }).map((_, i) => (
+                            <div key={i} className={styles.card} style={{ pointerEvents: 'none' }}>
+                                <div className={styles.cardImg} style={{ background: '#E2E8F0', animation: 'pulse 1.5s infinite ease-in-out' }}></div>
                                 <div className={styles.cardBody}>
-                                    <p className={styles.cardNgo}>{c.ngoName} · {c.districtName}</p>
-                                    <h3 className={styles.cardTitle}>{c.title}</h3>
-                                    <p className={styles.cardDesc}>{c.description}</p>
-                                    <div className={styles.cardFooter}>
-                                        <div className={styles.progressWrap}>
-                                            <div className={styles.progressBar}>
-                                                <div className={styles.progressVerified} style={{ width: `${Math.min(100, (c.verifiedAmount / c.goalAmount) * 100)}%` }} />
-                                                <div className={styles.progressPending} style={{ width: `${Math.min(100, (c.pendingAmount / c.goalAmount) * 100)}%` }} />
-                                            </div>
-                                            <div className={styles.progressMeta}>
-                                                <span className="font-mono" style={{ fontWeight: 700, color: 'var(--primary)' }}>
-                                                    ₹{((c.verifiedAmount + c.pendingAmount) / 100).toLocaleString('en-IN')}
-                                                </span>
-                                                <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-                                                    {Math.round(((c.verifiedAmount + c.pendingAmount) / c.goalAmount) * 100)}% of ₹{(c.goalAmount / 100).toLocaleString('en-IN')}
-                                                </span>
+                                    <div style={{ height: '14px', width: '40%', background: '#F1F5F9', marginBottom: '12px', borderRadius: '4px', animation: 'pulse 1.5s infinite ease-in-out' }}></div>
+                                    <div style={{ height: '24px', width: '80%', background: '#E2E8F0', marginBottom: '8px', borderRadius: '4px', animation: 'pulse 1.5s infinite ease-in-out' }}></div>
+                                    <div style={{ height: '24px', width: '60%', background: '#E2E8F0', marginBottom: '16px', borderRadius: '4px', animation: 'pulse 1.5s infinite ease-in-out' }}></div>
+                                    <div style={{ height: '60px', width: '100%', background: '#F8FAFC', borderRadius: '8px', animation: 'pulse 1.5s infinite ease-in-out' }}></div>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        filtered.map(c => {
+                            const raised = c.verifiedAmount + c.pendingAmount;
+                            const pct = Math.round((raised / c.goalAmount) * 100);
+                            return (
+                                <Link href={`/campaign/${c.id}`} key={c.id} className={styles.card}>
+                                    <div className={styles.cardImg}>
+                                        <img src={c.imageUrl || 'https://images.unsplash.com/photo-1584515839997-d0efba2f2341'} alt={c.title} />
+                                        <div className={styles.cardImgOverlay} />
+                                        <div className={styles.cardTagsTop}>
+                                            {c.status === 'URGENT' && <span className={styles.urgentTag}>🔴 Urgent</span>}
+                                        </div>
+                                        <span className={styles.daysTag}>
+                                            {c.deadline ? `${Math.ceil((new Date(c.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}d left` : 'Ongoing'}
+                                        </span>
+                                    </div>
+                                    <div className={styles.cardBody}>
+                                        <p className={styles.cardNgo}>{c.ngoName} · {c.districtName}</p>
+                                        <h3 className={styles.cardTitle}>{c.title}</h3>
+                                        <p className={styles.cardDesc}>{c.description}</p>
+                                        <div className={styles.cardFooter}>
+                                            <div className={styles.progressWrap}>
+                                                <div className={styles.progressBar}>
+                                                    <div className={styles.progressVerified} style={{ width: `${Math.min(100, (c.verifiedAmount / c.goalAmount) * 100)}%` }} />
+                                                    <div className={styles.progressPending} style={{ width: `${Math.min(100, (c.pendingAmount / c.goalAmount) * 100)}%` }} />
+                                                </div>
+                                                <div className={styles.progressMeta}>
+                                                    <span className="font-mono" style={{ fontWeight: 700, color: 'var(--primary)' }}>
+                                                        ₹{((c.verifiedAmount + c.pendingAmount) / 100).toLocaleString('en-IN')}
+                                                    </span>
+                                                    <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                                                        {Math.round(((c.verifiedAmount + c.pendingAmount) / c.goalAmount) * 100)}% of ₹{(c.goalAmount / 100).toLocaleString('en-IN')}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </Link>
-                        );
-                    })}
+                                </Link>
+                            );
+                        })
+                    )}
                 </div>
                 {filtered.length === 0 && (
                     <div className={styles.empty}>

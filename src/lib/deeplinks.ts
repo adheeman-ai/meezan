@@ -119,7 +119,7 @@ export const BANK_APPS: BankApp[] = [
         name: 'JK Bank',
         logo: '/banks/jkbank.svg',
         iosScheme: 'jkbmpay://', 
-        iosStoreUrl: 'https://apps.apple.com/app/jkb-mpay-delight/id6459356147',
+        iosStoreUrl: 'https://apps.apple.com/in/app/jkb-mpay-delight/id6459356147',
         androidPackage: 'com.lcode.jkbmpay',
         androidStoreUrl: 'https://play.google.com/store/apps/details?id=com.lcode.jkbmpay&hl=en_IN',
     },
@@ -127,7 +127,7 @@ export const BANK_APPS: BankApp[] = [
         name: 'HDFC Bank',
         logo: '/banks/hdfc.svg',
         iosScheme: 'hdfcmobile://',
-        iosStoreUrl: 'https://apps.apple.com/app/hdfc-bank-mobilebankingapp/id438629283',
+        iosStoreUrl: 'https://apps.apple.com/in/app/hdfc-bank-mobilebankingapp/id438629283',
         androidPackage: 'com.snapwork.hdfc',
         androidStoreUrl: 'https://play.google.com/store/apps/details?id=com.snapwork.hdfc',
     },
@@ -135,7 +135,7 @@ export const BANK_APPS: BankApp[] = [
         name: 'SBI YONO',
         logo: '/banks/sbi.svg',
         iosScheme: 'yono://',
-        iosStoreUrl: 'https://apps.apple.com/app/yono-by-sbi/id1317638810',
+        iosStoreUrl: 'https://apps.apple.com/in/app/yono-by-sbi/id1317638810',
         androidPackage: 'com.sbi.lotusintouch',
         androidStoreUrl: 'https://play.google.com/store/apps/details?id=com.sbi.lotusintouch',
     },
@@ -143,7 +143,7 @@ export const BANK_APPS: BankApp[] = [
         name: 'Axis Bank',
         logo: '/banks/axisbank.svg',
         iosScheme: 'axismobile://',
-        iosStoreUrl: 'https://apps.apple.com/app/axis-mobile-banking-app/id1455024334',
+        iosStoreUrl: 'https://apps.apple.com/in/app/axis-mobile-banking-app/id1455024334',
         androidPackage: 'com.axis.mobile',
         androidStoreUrl: 'https://play.google.com/store/apps/details?id=com.axis.mobile',
     },
@@ -151,7 +151,7 @@ export const BANK_APPS: BankApp[] = [
         name: 'ICICI Bank',
         logo: '/banks/icici.svg',
         iosScheme: 'imobilepay://',
-        iosStoreUrl: 'https://apps.apple.com/app/imobile-pay-by-icici-bank/id427761633',
+        iosStoreUrl: 'https://apps.apple.com/in/app/imobile-pay-by-icici-bank/id427761633',
         androidPackage: 'com.csam.icici.bank.imobile',
         androidStoreUrl: 'https://play.google.com/store/apps/details?id=com.csam.icici.bank.imobile',
     },
@@ -159,7 +159,7 @@ export const BANK_APPS: BankApp[] = [
         name: 'Kotak Bank',
         logo: '/banks/kotak.svg',
         iosScheme: 'kotakbank://',
-        iosStoreUrl: 'https://apps.apple.com/app/kotak-mobile-banking-app/id880030949',
+        iosStoreUrl: 'https://apps.apple.com/in/app/kotak-mobile-banking-app/id880030949',
         androidPackage: 'com.msf.kbank.mobile',
         androidStoreUrl: 'https://play.google.com/store/apps/details?id=com.msf.kbank.mobile',
     },
@@ -170,8 +170,10 @@ export function openBankApp(bank: BankApp): void {
 
     if (platform === 'android') {
         const fallback = encodeURIComponent(bank.androidStoreUrl);
-        // Removing action=VIEW. Just the package name instructs Chrome to launch the app's main intent.
-        const intentUri = `intent://#Intent;package=${bank.androidPackage};S.browser_fallback_url=${fallback};end`;
+        // Chrome Android strictly requires a matching intent filter. 
+        // Using the custom scheme (borrowed from iOS) is the most reliable way to hit a BROWSABLE filter.
+        const schemeName = bank.iosScheme.replace('://', '');
+        const intentUri = `intent://${schemeName}#Intent;scheme=${schemeName};package=${bank.androidPackage};S.browser_fallback_url=${fallback};end`;
         window.location.href = intentUri;
     } else if (platform === 'ios') {
         window.location.href = bank.iosScheme;
@@ -191,5 +193,35 @@ export function openBankApp(bank: BankApp): void {
         document.addEventListener('visibilitychange', handleVisibilityChange);
     } else {
         window.open(bank.androidStoreUrl, '_blank');
+    }
+}
+
+/**
+ * Trigger UPI Apps with App Store Fallbacks for iOS.
+ */
+export function openUpiApp(schemeUrl: string, storeUrlIos: string): void {
+    const platform = detectPlatform();
+    
+    if (platform === 'android') {
+        // Android is already handled safely via intent:// links returned by getGPayLink etc.
+        window.location.href = schemeUrl;
+    } else if (platform === 'ios') {
+        window.location.href = schemeUrl;
+        
+        const handleVisibilityChange = () => {
+            clearTimeout(timer);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
+        
+        const timer = setTimeout(() => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            if (!document.hidden && storeUrlIos) {
+                window.location.href = storeUrlIos;
+            }
+        }, 3000); 
+        
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+    } else {
+        window.location.href = schemeUrl;
     }
 }

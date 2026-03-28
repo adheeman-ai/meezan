@@ -9,6 +9,7 @@ import styles from './campaign-detail.module.css';
 import {
     BANK_APPS,
     openBankApp,
+    openUpiApp,
     getGPayLink,
     getPhonePeLink,
     getPaytmLink,
@@ -232,12 +233,11 @@ export default function CampaignDetailPage() {
                                                         className={styles.upiAppIcon}
                                                         title="Pay with GPay"
                                                         onClick={(e) => {
-                                                            // On Android, intent:// links must be set via location.href, not <a>
-                                                            const platform = detectPlatform();
-                                                            if (platform === 'android') {
-                                                                e.preventDefault();
-                                                                window.location.href = getGPayLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount });
-                                                            }
+                                                            e.preventDefault();
+                                                            openUpiApp(
+                                                                getGPayLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount }),
+                                                                'https://apps.apple.com/in/app/google-pay-save-pay-manage/id1193357041'
+                                                            );
                                                         }}
                                                     >
                                                         <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="GPay" />
@@ -248,11 +248,11 @@ export default function CampaignDetailPage() {
                                                         className={styles.upiAppIcon}
                                                         title="Pay with PhonePe"
                                                         onClick={(e) => {
-                                                            const platform = detectPlatform();
-                                                            if (platform === 'android') {
-                                                                e.preventDefault();
-                                                                window.location.href = getPhonePeLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount });
-                                                            }
+                                                            e.preventDefault();
+                                                            openUpiApp(
+                                                                getPhonePeLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount }),
+                                                                'https://apps.apple.com/in/app/phonepe-secure-payments-app/id1170055821'
+                                                            );
                                                         }}
                                                     >
                                                         <img src="https://cdn.simpleicons.org/phonepe/5f259f" alt="PhonePe" />
@@ -263,11 +263,11 @@ export default function CampaignDetailPage() {
                                                         className={styles.upiAppIcon}
                                                         title="Pay with Paytm"
                                                         onClick={(e) => {
-                                                            const platform = detectPlatform();
-                                                            if (platform === 'android') {
-                                                                e.preventDefault();
-                                                                window.location.href = getPaytmLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount });
-                                                            }
+                                                            e.preventDefault();
+                                                            openUpiApp(
+                                                                getPaytmLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount }),
+                                                                'https://apps.apple.com/in/app/paytm-secure-upi-payments/id473941634'
+                                                            );
                                                         }}
                                                     >
                                                         <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" />
@@ -524,15 +524,24 @@ export default function CampaignDetailPage() {
                                     </div>
                                     <div className={styles.upiGrid}>
                                         <a href={getGPayLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount })} className={styles.upiAppIcon} title="Pay with GPay"
-                                            onClick={(e) => { if (detectPlatform() === 'android') { e.preventDefault(); window.location.href = getGPayLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount }); } }}>
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                openUpiApp(getGPayLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount }), 'https://apps.apple.com/in/app/google-pay-save-pay-manage/id1193357041');
+                                            }}>
                                             <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="GPay" />
                                         </a>
                                         <a href={getPhonePeLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount })} className={styles.upiAppIcon} title="Pay with PhonePe"
-                                            onClick={(e) => { if (detectPlatform() === 'android') { e.preventDefault(); window.location.href = getPhonePeLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount }); } }}>
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                openUpiApp(getPhonePeLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount }), 'https://apps.apple.com/in/app/phonepe-secure-payments-app/id1170055821');
+                                            }}>
                                             <img src="https://cdn.simpleicons.org/phonepe/5f259f" alt="PhonePe" />
                                         </a>
                                         <a href={getPaytmLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount })} className={styles.upiAppIcon} title="Pay with Paytm"
-                                            onClick={(e) => { if (detectPlatform() === 'android') { e.preventDefault(); window.location.href = getPaytmLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount }); } }}>
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                openUpiApp(getPaytmLink({ upiId: DUMMY_CAMPAIGN.upiId, payeeName: DUMMY_CAMPAIGN.ngoName, amount: selectedAmount }), 'https://apps.apple.com/in/app/paytm-secure-upi-payments/id473941634');
+                                            }}>
                                             <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" />
                                         </a>
                                     </div>
