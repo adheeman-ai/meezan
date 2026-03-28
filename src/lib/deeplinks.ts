@@ -165,32 +165,20 @@ export const BANK_APPS: BankApp[] = [
     },
 ];
 
+/**
+ * Opens bank apps by routing directly to their native App Store / Play Store profiles.
+ * Indian banking apps heavily restrict web-based intent launching for security reasons,
+ * causing Safari "Invalid Address" errors or Android intent failures.
+ * Routing to the Store natively provides an "Open" button if the app is already installed,
+ * ensuring a perfectly smooth, error-free UX.
+ */
 export function openBankApp(bank: BankApp): void {
     const platform = detectPlatform();
 
     if (platform === 'android') {
-        const fallback = encodeURIComponent(bank.androidStoreUrl);
-        // Chrome Android strictly requires a matching intent filter. 
-        // Using the custom scheme (borrowed from iOS) is the most reliable way to hit a BROWSABLE filter.
-        const schemeName = bank.iosScheme.replace('://', '');
-        const intentUri = `intent://${schemeName}#Intent;scheme=${schemeName};package=${bank.androidPackage};S.browser_fallback_url=${fallback};end`;
-        window.location.href = intentUri;
+        window.location.href = bank.androidStoreUrl;
     } else if (platform === 'ios') {
-        window.location.href = bank.iosScheme;
-        
-        const handleVisibilityChange = () => {
-            clearTimeout(timer);
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
-        };
-        
-        const timer = setTimeout(() => {
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
-            if (!document.hidden && bank.iosStoreUrl) {
-                window.location.href = bank.iosStoreUrl;
-            }
-        }, 1200); 
-        
-        document.addEventListener('visibilitychange', handleVisibilityChange);
+        window.location.href = bank.iosStoreUrl;
     } else {
         window.open(bank.androidStoreUrl, '_blank');
     }
