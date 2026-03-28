@@ -185,10 +185,10 @@ export function openBankApp(bank: BankApp): void {
         
         const timer = setTimeout(() => {
             document.removeEventListener('visibilitychange', handleVisibilityChange);
-            if (!document.hidden) {
+            if (!document.hidden && bank.iosStoreUrl) {
                 window.location.href = bank.iosStoreUrl;
             }
-        }, 3000); 
+        }, 1200); 
         
         document.addEventListener('visibilitychange', handleVisibilityChange);
     } else {
