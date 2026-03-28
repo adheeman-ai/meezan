@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import ProgressBar from '@/components/ProgressBar';
 import Button from '@/components/Button';
@@ -56,6 +56,11 @@ export default function CampaignDetailPage() {
     const [reporting, setReporting] = useState(false);
     const [showHowToPopup, setShowHowToPopup] = useState(false);
     const [showPaymentSheet, setShowPaymentSheet] = useState(false);
+
+    // Force scroll to top on mount to fix bad transition UX
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     const presets = [500, 1000, 2000, 5000];
 

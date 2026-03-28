@@ -91,8 +91,8 @@ export function getPaytmLink(params: UpiParams, platform = detectPlatform()): st
     );
     switch (platform) {
         case 'ios':
-            // paytmmp://pay? is for UPI
-            return `paytmmp://pay?${query}`;
+            // Using base paytm scheme without mp or upi segments
+            return `paytm://pay?${query}`;
         case 'android':
             // Using paytmmp:// as scheme inside intent
             return `intent://pay?${query}#Intent;scheme=paytmmp;package=net.one97.paytm;action=android.intent.action.VIEW;S.browser_fallback_url=${playStoreFallback};end`;
@@ -170,8 +170,8 @@ export function openBankApp(bank: BankApp): void {
 
     if (platform === 'android') {
         const fallback = encodeURIComponent(bank.androidStoreUrl);
-        // Using main activity intent for launching
-        const intentUri = `intent://#Intent;action=android.intent.action.VIEW;package=${bank.androidPackage};S.browser_fallback_url=${fallback};end`;
+        // Removing action=VIEW. Just the package name instructs Chrome to launch the app's main intent.
+        const intentUri = `intent://#Intent;package=${bank.androidPackage};S.browser_fallback_url=${fallback};end`;
         window.location.href = intentUri;
     } else if (platform === 'ios') {
         window.location.href = bank.iosScheme;
@@ -186,7 +186,7 @@ export function openBankApp(bank: BankApp): void {
             if (!document.hidden) {
                 window.location.href = bank.iosStoreUrl;
             }
-        }, 2500); 
+        }, 3000); 
         
         document.addEventListener('visibilitychange', handleVisibilityChange);
     } else {
