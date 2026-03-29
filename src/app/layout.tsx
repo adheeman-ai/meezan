@@ -17,7 +17,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="watermark-container">
-        <div className="watermark-text">میزان</div>
         <Header />
         <main>{children}</main>
         <Footer />

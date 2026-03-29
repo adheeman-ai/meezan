@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import styles from './Header.module.css';
@@ -30,8 +31,15 @@ export default function Header() {
             <div className={`container ${styles.container}`}>
 
                 <Link href="/" className={styles.logo}>
-                    <img src="/logos/mizaan-white.png" alt="Mizaan Logo" className={styles.logoLight} />
-                    <img src="/logos/mizaan-black.png" alt="Mizaan Logo" className={styles.logoDark} />
+                    <Image 
+                        src={headerActive ? "/logos/mizaan-black.png" : "/logos/mizaan-white.png"} 
+                        alt="Mizaan Logo" 
+                        width={120}
+                        height={32}
+                        className={styles.logoImg}
+                        priority
+                        unoptimized
+                    />
                 </Link>
 
                 <nav className={styles.nav}>

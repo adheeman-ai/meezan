@@ -90,12 +90,12 @@ export default function AboutPage() {
 
                     <div className={styles.problemGrid}>
                         {[
-                            { title: 'Information Decay', desc: 'Social media posts lose relevance within hours. Donors can&apos;t easily find active versus funded cases.', icon: <Icons.Tracking /> },
-                            { title: 'The 10% Leakage', desc: 'Global platforms charge high fees. For every ₹1,00,000 raised, ₹10,000 is lost to fees.', icon: <Icons.Fees /> },
-                            { title: 'Verification Fatigue', desc: 'NGO volunteers spend 60% of their time manually matching UPI names to bank statements.', icon: <Icons.Manual /> },
-                            { title: 'Zero Documentation', desc: 'Anonymous transfers on social media leave donors without legal receipts or tax benefits.', icon: <Icons.Receipt /> },
-                            { title: 'Coverage Imbalance', desc: 'Aid is often reactive, focusing on central areas while leaving remote districts underserved.', icon: <Icons.District /> },
-                            { title: 'Trust Deficit', desc: 'Lack of verified collection data makes it difficult for donors to contribute with full confidence.', icon: <Icons.Verified /> }
+                            { title: 'The Endless Campaign', desc: 'NGOs share posters with initial targets on social media. Without a live ledger, donors keep sending money blindly long after the case is closed.', icon: <Icons.Tracking /> },
+                            { title: 'The 10% Leakage', desc: 'Global platforms charge high platform fees and payment gateway fees. For every ₹1,00,000 raised, nearly ₹10,000 is lost to corporations.', icon: <Icons.Fees /> },
+                            { title: 'Verification Fatigue', desc: 'NGO volunteers spend 60% of their time manually matching random UPI names to massive unorganized bank statements.', icon: <Icons.Manual /> },
+                            { title: 'Legal Vulnerability', desc: 'Donating to random social media posts limits traceability. Without official receipts containing the NGO\'s PAN, donors face legal risks during audits.', icon: <Icons.Receipt /> },
+                            { title: 'Coverage Imbalance', desc: 'Aid is often reactive, focusing on central areas while leaving remote districts in Kashmir completely underserved.', icon: <Icons.District /> },
+                            { title: 'Trust Deficit', desc: 'Lack of verified collection data makes it difficult for generous donors to contribute with absolute confidence.', icon: <Icons.Verified /> }
                         ].map((p, i) => (
                             <div key={i} className={styles.problemCard}>
                                 <div className={styles.cardHeader}>
@@ -121,12 +121,12 @@ export default function AboutPage() {
 
                     <div className={styles.processFlow}>
                         {[
-                            { title: 'Credential Vetting', desc: 'We verify 12A/80G status and track records before granting portal access.', icon: <Icons.NGO /> },
-                            { title: 'Instant Launch', desc: 'NGOs generate posters and tracking links with pre-filled bank/UPI details.', icon: <Icons.Campaign /> },
-                            { title: 'Direct Deposits', desc: 'Donors pay NGOs directly. By skipping gateways, we save 3% on every gift.', icon: <Icons.Direct /> },
-                            { title: 'Report & Track', desc: 'Donors log their transaction ID. The system adds it to the public queue immediately.', icon: <Icons.Tracking /> },
-                            { title: 'Auto-Verification', desc: 'Our system matches transaction IDs with NGO bank logs for sub-second validation.', icon: <Icons.Automation /> },
-                            { title: 'Public Ledger', desc: 'Verified amounts update live. Donors receive official digital receipts.', icon: <Icons.Receipt /> }
+                            { title: 'Portal Access', desc: 'NGOs register and verify their credentials with us. Once approved, they gain full administrative portal access.', icon: <Icons.NGO /> },
+                            { title: 'Single Share Link', desc: 'NGOs create campaigns, utilize the auto-poster generator, and share one centralized tracking link across social media.', icon: <Icons.Campaign /> },
+                            { title: 'Smart Payments', desc: 'Donors click the link. On mobile, it directly opens their preferred UPI app with prefilled amounts or shows direct bank details.', icon: <Icons.Direct /> },
+                            { title: 'Donation Reporting', desc: 'After transferring directly to the NGO, donors log their UTR or Reference ID on our platform to initiate tracking.', icon: <Icons.Tracking /> },
+                            { title: 'Smart Verification', desc: 'NGOs upload bank statements for our intelligent system to auto-prompt verification matches, saving hours of manual labor.', icon: <Icons.Automation /> },
+                            { title: 'Legal Receipts', desc: 'Once verified, donors receive detailed official receipts (including the NGO\'s PAN and donor name), averting legal tracing troubles.', icon: <Icons.Receipt /> }
                         ].map((step, i) => (
                             <div key={i} className={styles.processItem}>
                                 <div className={styles.processCircle}>
@@ -197,7 +197,7 @@ export default function AboutPage() {
                                     { f: 'Live Tracking', s: '✗', g: '✓', m: '✓' },
                                     { f: 'Platform Fees', s: '0%', g: '5-8%', m: '0%' },
                                     { f: 'Gateway Fees', s: 'N/A', g: '3%', m: '0%' },
-                                    { f: '80G Receipts', s: '✗', g: '✓', m: '✓' },
+                                    { f: 'Official Receipts', s: '✗', g: '✓', m: '✓' },
                                     { f: 'Credential Check', s: '✗', g: 'Limited', m: '✓' },
                                     { f: 'District Focus', s: '✗', g: '✗', m: '✓' },
                                     { f: 'Auto-Verification', s: '✗', g: '✗', m: '✓' }

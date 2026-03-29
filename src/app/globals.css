@@ -532,28 +532,9 @@ h4 {
   box-shadow: 0 4px 12px var(--primary-glow);
 }
 
-/* === WATERMARK === */
 .watermark-container {
   position: relative;
   min-height: 100vh;
-}
-
-.watermark-text {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80vw;
-  max-width: 800px;
-  height: 80vw;
-  max-height: 800px;
-  background-image: url('/logos/mizaan-black.png');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-  opacity: 0.02;
-  z-index: -1;
-  pointer-events: none;
 }
 
 /* === ANIMATIONS === */

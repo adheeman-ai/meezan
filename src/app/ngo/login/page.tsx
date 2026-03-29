@@ -49,7 +49,7 @@ export default function NgoSignInPage() {
             <div style={{ background: 'white', padding: '48px', borderRadius: '24px', width: '100%', maxWidth: '440px', boxShadow: '0 10px 40px rgba(15, 52, 96, 0.08)' }}>
                 <div style={{ textAlign: 'center', marginBottom: '32px' }}>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
-                        <img src="/logos/mizaan-black.png" alt="Mizaan" style={{ height: '64px', width: 'auto' }} />
+                        <img src="/logos/mizaan-black.png" alt="Mizaan" style={{ height: '48px', width: 'auto' }} />
                     </div>
                     <h1 className="font-heading" style={{ fontSize: '1.75rem', marginBottom: '8px' }}>NGO Partner Login</h1>
                     <p style={{ color: 'var(--text-secondary, #475569)', fontSize: '0.95rem' }}>Access your dashboard to manage campaigns and verify donations.</p>

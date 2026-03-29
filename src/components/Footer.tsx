@@ -14,7 +14,7 @@ export default function Footer() {
                     {/* Brand */}
                     <div className={styles.brand}>
                         <Link href="/" className={styles.logo}>
-                            <img src="/logos/mizaan-white.png" alt="Mizaan" style={{ height: '80px', width: 'auto' }} />
+                            <img src="/logos/mizaan-white.png" alt="Mizaan" style={{ height: '32px', width: 'auto' }} />
                         </Link>
                         <p className={styles.tagline}>
                             A community-first platform bringing transparency and direct aid to Kashmir&apos;s 10 districts. Zero fees. Full trust.
@@ -57,10 +57,11 @@ export default function Footer() {
                     <div className={styles.column}>
                         <h4 className={`${styles.colTitle} font-heading`}>Help & Trust</h4>
                         <ul>
-                            <li><a href="mailto:shukriya@mizaan.org">Email Support</a></li>
+                            <li><a href="mailto:support@adheeman.com">Email Support</a></li>
+                            <li><Link href="/faq">FAQ</Link></li>
                             <li><Link href="/transparency">Public Aid Ledger</Link></li>
-                            <li><a href="#">Terms of Service</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
+                            <li><Link href="/terms">Terms of Service</Link></li>
+                            <li><Link href="/privacy">Privacy Policy</Link></li>
                         </ul>
 
                         <div className={styles.badge}>

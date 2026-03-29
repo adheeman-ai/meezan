@@ -23,7 +23,7 @@ export default function CampaignCard({ campaign }: { campaign: CampaignData }) {
     return (
         <div className={`${styles.card} glass-card`}>
             <div className={styles.imageWrapper}>
-                <img src={campaign.imageUrl} alt={campaign.title} className={styles.image} />
+                <img src={campaign.imageUrl || '/templates/winter.png'} alt={campaign.title} className={styles.image} />
                 <span className={styles.categoryBadge}>{campaign.category.replace('_', ' ')}</span>
                 {campaign.isUrgent && <span className={styles.urgentBadge}>Urgent</span>}
             </div>

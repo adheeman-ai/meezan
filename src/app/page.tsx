@@ -112,22 +112,14 @@ export default async function Home() {
     pct: Math.round(((c.verifiedAmount + c.pendingAmount) / c.goalAmount) * 100),
     donors: c._count.donations,
     isUrgent: c.status === 'URGENT',
-    image: c.imageUrl || 'https://images.unsplash.com/photo-1584515839997-d0efba2f2341?q=80&w=600&auto=format&fit=crop'
+    image: (c.imageUrl && c.imageUrl.startsWith('http')) ? c.imageUrl : '/templates/winter.png'
   }));
   return (
     <div>
       {/* ===== HERO ===== */}
       <section className={styles.hero}>
         <div className={styles.heroBg}>
-          <Image
-            src="https://images.unsplash.com/photo-1598305371124-4f094fea4608?q=80&w=2000"
-            alt="Kashmir Valley"
-            fill
-            priority
-            quality={85}
-            sizes="100vw"
-            style={{ objectFit: 'cover', opacity: 0.55, filter: 'saturate(1.1)' }}
-          />
+
           <div className={styles.heroMap} />
           <div className={styles.heroGradient} />
         </div>

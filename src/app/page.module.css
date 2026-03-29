@@ -550,20 +550,6 @@
   overflow: hidden;
 }
 
-.trustSection::before {
-  content: '';
-  position: absolute;
-  top: 55%;
-  right: 5%;
-  transform: translateY(-50%);
-  width: 500px;
-  height: 500px;
-  background-image: url('/logos/mizaan-white.png');
-  background-repeat: no-repeat;
-  background-size: contain;
-  opacity: 0.03;
-  pointer-events: none;
-}
 
 .trustInner {
   display: grid;
@@ -677,6 +663,16 @@
   .heroTagline {
     font-size: 1rem;
     margin-bottom: 32px;
+  }
+
+  .trustStrip {
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .trustItem {
+    padding: 6px 14px;
+    font-size: 0.75rem;
   }
 
   .statsRow {
