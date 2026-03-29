@@ -120,7 +120,16 @@ export default async function Home() {
       <section className={styles.hero}>
         <div className={styles.heroBg}>
 
-          <div className={styles.heroMap} />
+          <div className={styles.heroMap}>
+            <Image 
+              src="/templates/map.png" 
+              alt="Kashmir Region Map" 
+              fill 
+              priority 
+              unoptimized 
+              style={{ objectFit: 'contain' }} 
+            />
+          </div>
           <div className={styles.heroGradient} />
         </div>
 

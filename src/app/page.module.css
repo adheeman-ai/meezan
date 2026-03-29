@@ -35,7 +35,6 @@
 .heroMap {
   position: absolute;
   inset: 0;
-  background: url('/templates/map.png') center/contain no-repeat;
   opacity: 0.25;
   pointer-events: none;
   z-index: 1;
@@ -653,7 +652,18 @@
 
 @media (max-width: 768px) {
   .heroInner {
-    padding: 100px 0 60px;
+    padding: 100px 0 120px;
+  }
+
+  .heroCta {
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .heroCta > * {
+    width: 100%;
+    justify-content: center;
   }
 
   .heroTitle {

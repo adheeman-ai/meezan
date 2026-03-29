@@ -58,7 +58,7 @@ export default function Header() {
                 </nav>
 
                 <div className={styles.actions}>
-                    <Link href="/campaigns" className="btn-accent" style={{ padding: '10px 22px', borderRadius: '50px', fontSize: '0.9rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                    <Link href="/campaigns" className={`btn-accent ${styles.donateBtn}`}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.59l-1.42-1.3C5.4 15.36 2 12.27 2 8.5 2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.58 11.79L12 21.59z" /></svg>
                         Donate Now
                     </Link>

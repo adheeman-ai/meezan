@@ -108,6 +108,16 @@
     flex-shrink: 0;
 }
 
+.donateBtn {
+    padding: 10px 22px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
 /* === HAMBURGER === */
 .menuBtn {
     display: none;
@@ -142,9 +152,15 @@
     display: block;
     width: 22px;
     height: 2px;
-    background: var(--primary, #0F3460);
+    background: white;
     border-radius: 2px;
     transition: all 300ms ease;
+}
+
+.header.scrolled .hamburger,
+.header.scrolled .hamburger::before,
+.header.scrolled .hamburger::after {
+    background: var(--primary, #0F3460);
 }
 
 .hamburger {
@@ -184,17 +200,19 @@
 .mobileMenu {
     display: none;
     flex-direction: column;
-    background: white;
-    border-bottom: 1px solid var(--gray-200, #E2E8F0);
+    background: transparent;
+    border: none;
     padding: 0 24px;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 300ms ease, padding 300ms ease;
+    transition: max-height 300ms ease, padding 300ms ease, background-color 300ms ease;
 }
 
 .mobileOpen {
     max-height: 400px;
     padding: 16px 24px 24px;
+    background: white;
+    border-bottom: 1px solid var(--gray-200, #E2E8F0);
 }
 
 .mobileLink {
@@ -240,5 +258,11 @@
 
     .actions a:first-child {
         display: none;
+    }
+
+    .donateBtn {
+        padding: 6px 14px;
+        font-size: 0.8rem;
+        display: inline-flex !important;
     }
 }
