@@ -35,15 +35,19 @@
 
 .logoLight {
     display: block;
-    height: 72px;
+    height: 40px;
     width: auto;
+    object-fit: contain;
+    image-rendering: auto;
     transition: opacity 300ms ease;
 }
 
 .logoDark {
     display: none;
-    height: 72px;
+    height: 40px;
     width: auto;
+    object-fit: contain;
+    image-rendering: auto;
     transition: opacity 300ms ease;
 }
 

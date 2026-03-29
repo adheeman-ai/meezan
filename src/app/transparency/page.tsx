@@ -14,7 +14,6 @@ const RECENT_DONATIONS = [
 ];
 
 export default function TransparencyPage() {
-    const [search, setSearch] = useState('');
 
     return (
         <div className={styles.page}>
@@ -46,21 +45,12 @@ export default function TransparencyPage() {
                 <div className={styles.ledgerCard}>
                     <div className={styles.ledgerHeader}>
                         <h2 className="font-heading">Public Transactions</h2>
-                        <div className={styles.searchBox}>
-                            <input
-                                type="text"
-                                placeholder="Search by donor or NGO..."
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                            />
-                        </div>
                     </div>
 
                     <div className={styles.tableWrapper}>
                         <table className={styles.table}>
                             <thead>
                                 <tr>
-                                    <th>Ref ID</th>
                                     <th>Donor</th>
                                     <th>Amount</th>
                                     <th>NGO Initiative</th>
@@ -69,12 +59,8 @@ export default function TransparencyPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {RECENT_DONATIONS.filter(d =>
-                                    d.donor.toLowerCase().includes(search.toLowerCase()) ||
-                                    d.ngo.toLowerCase().includes(search.toLowerCase())
-                                ).map(donation => (
+                                {RECENT_DONATIONS.map(donation => (
                                     <tr key={donation.id}>
-                                        <td className="font-mono" style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>{donation.id}</td>
                                         <td><b>{donation.donor}</b></td>
                                         <td className="font-mono" style={{ fontWeight: 700, color: 'var(--primary)' }}>{donation.amount}</td>
                                         <td>
@@ -102,12 +88,7 @@ export default function TransparencyPage() {
                     </div>
                 </div>
 
-                <div className={styles.trustSection}>
-                    <div className={styles.trustBox}>
-                        <h3>How Verification works</h3>
-                        <p>Donors pay NGOs directly via UPI or Bank Transfer. They then report the 12-digit UTR/Transaction ID on Mizaan. The NGO matches this with their bank statement and marks it as &quot;Verified&quot;. This prevents double-counting and ensures credibility.</p>
-                    </div>
-                </div>
+
             </div>
         </div>
     );

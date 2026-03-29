@@ -7,7 +7,7 @@ import styles from './Header.module.css';
 
 export default function Header() {
     const pathname = usePathname();
-    const isDarkHeroPage = pathname === '/' || pathname === '/campaigns' || pathname === '/transparency' || pathname?.startsWith('/campaign/');
+    const isDarkHeroPage = pathname === '/' || pathname === '/campaigns' || pathname === '/transparency' || pathname === '/about' || pathname?.startsWith('/campaign/');
 
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -35,14 +35,17 @@ export default function Header() {
                 </Link>
 
                 <nav className={styles.nav}>
+                    <Link href="/" className={styles.navLink}>
+                        <span>Home</span>
+                    </Link>
                     <Link href="/campaigns" className={styles.navLink}>
                         <span>Campaigns</span>
                     </Link>
-                    <Link href="/ngo" className={styles.navLink}>
-                        <span>For NGOs</span>
+                    <Link href="/ngos" className={styles.navLink}>
+                        <span>NGOs</span>
                     </Link>
-                    <Link href="/ngo/dashboard" className={styles.navLink}>
-                        <span>Dashboard</span>
+                    <Link href="/about" className={styles.navLink}>
+                        <span>About</span>
                     </Link>
                 </nav>
 
@@ -64,9 +67,10 @@ export default function Header() {
 
             {/* Mobile Menu */}
             <div className={`${styles.mobileMenu} ${menuOpen ? styles.mobileOpen : ''}`}>
+                <Link href="/" className={styles.mobileLink} onClick={() => setMenuOpen(false)}>Home</Link>
                 <Link href="/campaigns" className={styles.mobileLink} onClick={() => setMenuOpen(false)}>Campaigns</Link>
-                <Link href="/ngo" className={styles.mobileLink} onClick={() => setMenuOpen(false)}>For NGOs</Link>
-                <Link href="/ngo/dashboard" className={styles.mobileLink} onClick={() => setMenuOpen(false)}>Dashboard</Link>
+                <Link href="/ngos" className={styles.mobileLink} onClick={() => setMenuOpen(false)}>NGOs</Link>
+                <Link href="/about" className={styles.mobileLink} onClick={() => setMenuOpen(false)}>About Us</Link>
                 <Link href="/campaigns" className={styles.mobileCta} onClick={() => setMenuOpen(false)}>Donate Now</Link>
             </div>
         </header>

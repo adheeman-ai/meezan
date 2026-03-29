@@ -72,7 +72,7 @@ export default function CampaignsPage() {
                         <h1 className={`${styles.title} font-heading`}>Browse Campaigns</h1>
                         <p className={styles.subtitle}>Direct giving, zero fees, real impact — across all of Kashmir.</p>
                     </div>
-                    <div className={styles.filterBar}>
+                    <div className={styles.searchSection}>
                         <div className={styles.searchWrapper}>
                             <svg className={styles.searchIcon} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -85,6 +85,8 @@ export default function CampaignsPage() {
                                 onChange={e => setSearchTerm(e.target.value)}
                             />
                         </div>
+                    </div>
+                    <div className={styles.filterBar}>
                         <select className={styles.select} value={selectedDistrict} onChange={e => setSelectedDistrict(e.target.value)}>
                             <option value="">All Districts</option>
                             {DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
@@ -103,7 +105,8 @@ export default function CampaignsPage() {
 
             <div className="container">
                 <div className={styles.resultsBar}>
-                    <p className={styles.count}>{filtered.length} campaign{filtered.length !== 1 ? 's' : ''} found</p>
+                    {!loading && <p className={styles.count}>{filtered.length} campaign{filtered.length !== 1 ? 's' : ''} found</p>}
+                    {loading && <p className={styles.count} style={{ visibility: 'hidden' }}>Loading...</p>}
                 </div>
                 <div className={styles.grid}>
                     {loading ? (

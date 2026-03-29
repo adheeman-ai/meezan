@@ -2,9 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import ProgressBar from '@/components/ProgressBar';
 import Button from '@/components/Button';
 import { QRCodeCanvas } from 'qrcode.react';
+import DonorFeed from '@/components/DonorFeed';
 import styles from './campaign-detail.module.css';
 import {
     BANK_APPS,
@@ -16,39 +18,6 @@ import {
     detectPlatform,
 } from '@/lib/deeplinks';
 
-const DUMMY_CAMPAIGN = {
-    id: '1',
-    title: 'Emergency Medical Equipment for SKIMS',
-    ngoName: 'Kashmir Relief Foundation',
-    district: 'Srinagar',
-    category: 'MEDICAL',
-    description: `
-    <p>The Sher-i-Kashmir Institute of Medical Sciences (SKIMS) is currently facing an acute shortage of life-saving medical equipment. As the primary healthcare facility for the valley, the hospital's intensive care unit is operating at over-capacity.</p>
-    <p>We are raising funds to procure the following equipment urgently:</p>
-    <ul>
-      <li><b>2 Portable Ventilators</b> - To support respiratory distress patients during transport within the hospital.</li>
-      <li><b>5 Multipara Monitors</b> - For continuous tracking of patients' vital signs.</li>
-      <li><b>1 ECG Machine</b> - To replace an aging unit in the emergency ward.</li>
-    </ul>
-    <p>Every rupee you donate goes directly to the NGO's bank account. Mizaan is a zero-fee platform — we do not take any commissions from your generous contributions.</p>
-    <p>Shukriya for your support in strengthening our local healthcare infrastructure.</p>
-  `,
-    verifiedAmount: 52000000, // ₹5,20,000
-    pendingAmount: 8500000,  // ₹85,000
-    goalAmount: 100000000,   // ₹10,00,000
-    imageUrl: 'https://images.unsplash.com/photo-1584515839997-d0efba2f2341?q=80&w=1200&auto=format&fit=crop',
-    donorCount: 156,
-    daysLeft: 24,
-    upiId: '7006027134@ybl',
-    bankDetails: {
-        name: 'State Bank of India',
-        account: '123456789012',
-        ifsc: 'SBIN0000123',
-        holder: 'Kashmir Relief Foundation'
-    },
-    isZakatEligible: true,
-    is80G: true
-};
 
 export default function CampaignDetailPage() {
     const { id } = useParams();
@@ -58,31 +27,80 @@ export default function CampaignDetailPage() {
     const [showHowToPopup, setShowHowToPopup] = useState(false);
     const [showPaymentSheet, setShowPaymentSheet] = useState(false);
 
-    // Force scroll to top on mount to fix bad transition UX
+    const [campaignData, setCampaignData] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
     useEffect(() => {
         window.scrollTo(0, 0);
-    }, []);
+        
+        fetch(`/api/campaigns/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) throw new Error(data.error);
+                setCampaignData({
+                    id: data.id.toString(),
+                    title: data.title,
+                    ngoId: data.ngo?.id?.toString() || '1',
+                    ngoName: data.ngo?.name || 'Verified NGO',
+                    email: data.ngo?.email || 'contact@ngo.org',
+                    phone: data.ngo?.phone || '+91 00000 00000',
+                    district: data.ngo?.district?.name || 'Kashmir',
+                    category: data.category,
+                    description: data.description,
+                    verifiedAmount: data.verifiedAmount || 0,
+                    pendingAmount: data.pendingAmount || 0,
+                    goalAmount: data.goalAmount || 1000,
+                    imageUrl: data.posterUrl || data.imageUrl || '',
+                    donorCount: 156, // Mock metric until donations live
+                    daysLeft: data.deadline ? Math.max(0, Math.ceil((new Date(data.deadline).getTime() - Date.now()) / 86400000)) : 30,
+                    upiId: data.upiId || data.ngo?.upiId || '',
+                    bankDetails: {
+                        name: data.bankName || data.ngo?.bankName || '',
+                        account: data.bankAccount || data.ngo?.bankAccount || '',
+                        ifsc: data.ifsc || data.ngo?.ifsc || '',
+                        holder: data.accountHolder || data.ngo?.accountHolder || ''
+                    },
+                    isZakatEligible: true, // Will wire to DB flags later
+                    is80G: true,
+                    donations: data.donations || []
+                });
+                setLoading(false);
+            })
+            .catch(err => {
+                setError(err.message);
+                setLoading(false);
+            });
+    }, [id]);
+
+    if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F8FAFC' }}>Loading Campaign Data...</div>;
+    if (error || !campaignData) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F8FAFC' }}>{error || 'Campaign not found'}</div>;
+
+    const DUMMY_CAMPAIGN = campaignData;
+
+    const getImageUrl = (path: string) => {
+        if (!path) return 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%221200%22%20height%3D%22800%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201200%20800%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%232563EB%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230F172A%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%221200%22%20height%3D%22800%22%20fill%3D%22url(%23g)%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20fill%3D%22%23ffffff%22%20font-family%3D%22sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22bold%22%3ECampaign%20Poster%3C%2Ftext%3E%3C%2Fsvg%3E';
+        if (path.startsWith('gs://')) return `/api/image?path=${encodeURIComponent(path)}`;
+        return path;
+    };
 
     const presets = [500, 1000, 2000, 5000];
 
     return (
         <div className={styles.page}>
             {/* Hero Section */}
-            <div className={styles.hero}>
-                <div className={styles.heroBg}>
-                    <img src={DUMMY_CAMPAIGN.imageUrl} alt={DUMMY_CAMPAIGN.title} />
-                    <div className={styles.heroOverlay} />
-                </div>
-                <div className="container">
+            <div className={styles.hero} style={{ background: 'var(--primary, #0F3460)', position: 'relative' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(circle at center, rgba(255,255,255,0.05) 0%, transparent 70%)' }} />
+                <div className="container" style={{ position: 'relative', zIndex: 2 }}>
                     <div className={styles.heroContent}>
-                        <div className={styles.heroMeta}>
+                        <div className={styles.heroMeta} style={{ marginBottom: '24px' }}>
                             <span className={styles.categoryBadge}>{DUMMY_CAMPAIGN.category}</span>
                             <span className={styles.districtBadge}>{DUMMY_CAMPAIGN.district}</span>
-                            {DUMMY_CAMPAIGN.isZakatEligible && <span className={styles.categoryBadge} style={{ background: '#10B981', marginLeft: 'auto' }}>Zakat Eligible</span>}
-                            {DUMMY_CAMPAIGN.is80G && <span className={styles.categoryBadge} style={{ background: '#3B82F6', marginLeft: DUMMY_CAMPAIGN.isZakatEligible ? '0' : 'auto' }}>Tax Exempt 80G</span>}
+                            {DUMMY_CAMPAIGN.isZakatEligible && <span className={styles.categoryBadge} style={{ background: '#10B981', marginLeft: 'auto', border: 'none', color: 'white' }}>Zakat Eligible</span>}
+                            {DUMMY_CAMPAIGN.is80G && <span className={styles.categoryBadge} style={{ background: '#3B82F6', marginLeft: DUMMY_CAMPAIGN.isZakatEligible ? '0' : 'auto', border: 'none', color: 'white' }}>Tax Exempt 80G</span>}
                         </div>
-                        <h1 className={`${styles.title} font-heading`}>{DUMMY_CAMPAIGN.title}</h1>
-                        <p className={styles.ngoName}>Initiative by <b>{DUMMY_CAMPAIGN.ngoName}</b></p>
+                        <h1 className={`${styles.title} font-heading`} style={{ color: 'white', textShadow: 'none' }}>{DUMMY_CAMPAIGN.title}</h1>
+                        <p className={styles.ngoName} style={{ color: 'rgba(255,255,255,0.8)' }}>Initiative by <b style={{ color: 'white' }}>{DUMMY_CAMPAIGN.ngoName}</b></p>
                     </div>
                 </div>
             </div>
@@ -129,6 +147,15 @@ export default function CampaignDetailPage() {
                             </div>
                         </div>
 
+                        {/* Full Uncropped Campaign Poster / Cover Image */}
+                        <div style={{ marginBottom: '32px', borderRadius: '24px', overflow: 'hidden', border: '1px solid #E2E8F0', boxShadow: '0 4px 20px rgba(0,0,0,0.05)', background: '#F8FAFC' }}>
+                            <img 
+                                src={getImageUrl(DUMMY_CAMPAIGN.imageUrl)} 
+                                alt={`${DUMMY_CAMPAIGN.title} Poster`} 
+                                style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'contain', maxHeight: '1000px' }}
+                            />
+                        </div>
+
                         <section className={styles.storySection}>
                             <h2 className={`${styles.sectionTitle} font-heading`}>Campaign Story</h2>
                             <div
@@ -137,15 +164,44 @@ export default function CampaignDetailPage() {
                             />
                         </section>
 
+                        {/* Recent Donor Feed */}
+                        <DonorFeed donations={campaignData.donations} />
+
                         <section className={styles.ngoSection}>
-                            <div className={`${styles.ngoInfo} glass-card`}>
-                                <div className={styles.ngoHeader}>
+                            <div className={`${styles.ngoInfo} glass-card`} style={{ padding: '24px' }}>
+                                <div className={styles.ngoHeader} style={{ marginBottom: '20px' }}>
                                     <div className={styles.ngoAvatar}>{DUMMY_CAMPAIGN.ngoName[0]}</div>
                                     <div>
                                         <h3 className="font-heading">{DUMMY_CAMPAIGN.ngoName}</h3>
-                                        <p>Verified Local NGO • Srinagar, Kashmir</p>
+                                        <p>Verified Local NGO • {DUMMY_CAMPAIGN.district}, Kashmir</p>
                                     </div>
                                 </div>
+                                
+                                <div style={{ background: '#F8FAFC', padding: '16px', borderRadius: '12px', border: '1px solid #E2E8F0', marginBottom: '20px' }}>
+                                    <h4 style={{ fontSize: '0.80rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', marginBottom: '12px', letterSpacing: '1px' }}>Official Contact</h4>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.90rem', color: '#334155', fontWeight: 500 }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <span style={{ fontSize: '1.2rem' }}>📧</span> {DUMMY_CAMPAIGN.email}
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <span style={{ fontSize: '1.2rem' }}>📞</span> {DUMMY_CAMPAIGN.phone}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <Link 
+                                    href={`/ngos/${DUMMY_CAMPAIGN.ngoId}`}
+                                    style={{ 
+                                        width: '100%', display: 'flex', justifyContent: 'center', textDecoration: 'none', 
+                                        padding: '14px', borderRadius: '12px', fontWeight: 700, color: '#0F3460', 
+                                        border: '2px solid #E2E8F0', background: 'white', transition: '0.2s',
+                                        fontSize: '0.95rem'
+                                    }}
+                                    onMouseOver={e => e.currentTarget.style.borderColor = '#94A3B8'}
+                                    onMouseOut={e => e.currentTarget.style.borderColor = '#E2E8F0'}
+                                >
+                                    View Full Profile
+                                </Link>
                             </div>
                         </section>
                     </div>
@@ -369,7 +425,8 @@ export default function CampaignDetailPage() {
 
                                     <div className={styles.reportSectionWrapper}>
                                         <div className={styles.reportSection}>
-                                            <p className={styles.reportHint}>Already paid? Please Report Your Donation.</p>
+                                            <p className={styles.reportHint}>Already paid?</p>
+                                            <p className={styles.reportHint} style={{ marginTop: '-8px', marginBottom: '16px' }}>Please Report Your Donation.</p>
                                             <Button
                                                 className={styles.reportBtn}
                                                 onClick={() => setReporting(true)}
@@ -598,7 +655,7 @@ export default function CampaignDetailPage() {
                         <div style={{ padding: '16px 0 8px' }}>
                             <button className={styles.reportBtn} onClick={() => { setShowPaymentSheet(false); setReporting(true); }}>
                                 <span className={styles.btnShine}></span>
-                                Already paid? Report Your Donation
+                                Already paid? <br /> Report Your Donation
                             </button>
                         </div>
                     </div>

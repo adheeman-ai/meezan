@@ -28,7 +28,12 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
         }
 
-        // 3. For NGO Partners, check status
+        // 3. Block Super Admins from the NGO portal — return same generic error, never hint the account exists
+        if (user.role === 'SUPER_ADMIN') {
+            return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+        }
+
+        // 4. For NGO Partners, check status
         if (user.role === 'NGO_PARTNER' && user.ngo) {
             if (user.ngo.status === 'REJECTED') {
                 return NextResponse.json({ error: 'Your NGO account has been rejected. Please contact support.' }, { status: 403 });
@@ -46,7 +51,7 @@ export async function POST(request: Request) {
         return NextResponse.json({
             success: true,
             role: user.role,
-            redirect: user.role === 'SUPER_ADMIN' ? '/admin/dashboard' : '/ngo/dashboard'
+            redirect: '/ngo/dashboard'
         });
 
     } catch (error) {

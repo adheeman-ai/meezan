@@ -36,9 +36,9 @@ export default function Footer() {
                     <div className={styles.column}>
                         <h4 className={`${styles.colTitle} font-heading`}>Platform</h4>
                         <ul>
+                            <li><Link href="/about">About Meezan</Link></li>
                             <li><Link href="/campaigns">Browse Campaigns</Link></li>
-                            <li><Link href="/ngo">NGO Portal</Link></li>
-                            <li><Link href="/ngo/dashboard">NGO Dashboard</Link></li>
+                            <li><Link href="/ngo/login">NGO Portal</Link></li>
                         </ul>
                     </div>
 
@@ -71,12 +71,7 @@ export default function Footer() {
                 </div>
 
                 <div className={styles.bottom}>
-                    <p>© {new Date().getFullYear()} Mizaan — Served with Amanah in Kashmir{' '}
-                        <span style={{ color: 'var(--accent, #C9A84C)' }}>♥</span>
-                    </p>
-                    <p className={styles.bottomRight}>
-                        <span className="font-urdu" style={{ fontSize: '1.2rem', color: 'rgba(255,255,255,0.3)' }}>میزان</span>
-                    </p>
+                    <p>© {new Date().getFullYear()} Mizaan</p>
                 </div>
             </div>
         </footer>

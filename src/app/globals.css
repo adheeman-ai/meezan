@@ -7,22 +7,22 @@
 
 :root {
   /* === BRAND COLORS === */
-  --primary: #0F3460;
-  /* Deep Kashmir Indigo */
-  --primary-light: #16213E;
-  --primary-mid: #1A4B7C;
-  --primary-glow: rgba(15, 52, 96, 0.15);
-  --accent: #C9A84C;
-  /* Saffron Gold */
-  --accent-light: #E0BF6A;
-  --accent-dark: #A8882A;
-  --accent-glow: rgba(201, 168, 76, 0.2);
+  --primary: #1B4332;
+  /* Deep Forest/Charity Green */
+  --primary-light: #2D6A4F;
+  --primary-mid: #40916C;
+  --primary-glow: rgba(27, 67, 50, 0.15);
+  --accent: #F57C00;
+  /* Radiant Orange */
+  --accent-light: #FF9800;
+  --accent-dark: #E65100;
+  --accent-glow: rgba(245, 124, 0, 0.15);
 
   /* Semantic Status */
-  --success: #16A34A;
-  --success-bg: rgba(22, 163, 74, 0.08);
-  --warning: #D97706;
-  --warning-bg: rgba(217, 119, 6, 0.08);
+  --success: #1B4332;
+  --success-bg: rgba(27, 67, 50, 0.08);
+  --warning: #F57C00;
+  --warning-bg: rgba(245, 124, 0, 0.08);
   --danger: #DC2626;
   --danger-bg: rgba(220, 38, 38, 0.08);
   --info: #0369A1;
@@ -678,25 +678,13 @@ h4 {
   }
 }
 
-/* === MOBILE UTILITY CLASSES === */
-/* Show only on mobile (< 1024px) */
-.md-hidden {
-  display: none;
+/* === SKELETON ANIMATIONS === */
+@keyframes skeleton-pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
 }
 
-@media (max-width: 1024px) {
-  .md-hidden {
-    display: block;
-  }
-}
-
-/* Hide on mobile */
-.mobile-hidden {
-  display: block;
-}
-
-@media (max-width: 1024px) {
-  .mobile-hidden {
-    display: none;
-  }
+.skeleton-pulse {
+  animation: skeleton-pulse 1.5s infinite ease-in-out;
 }

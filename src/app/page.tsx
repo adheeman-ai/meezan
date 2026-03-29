@@ -1,5 +1,6 @@
-export const dynamic = 'force-dynamic';
+export const revalidate = 60; // Revalidate every minute
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './page.module.css';
 
 
@@ -70,35 +71,35 @@ const categoryColors: Record<string, string> = {
 };
 
 export default async function Home() {
-  const dbDistricts = await prisma.district.findMany({
-    include: {
-      ngos: {
-        include: { _count: { select: { campaigns: true } } }
+  const [dbDistricts, campaigns, campaignCount, ngoCount, districtCount] = await Promise.all([
+    prisma.district.findMany({
+      include: {
+        ngos: {
+          include: { _count: { select: { campaigns: true } } }
+        }
       }
-    }
-  });
+    }),
+    prisma.campaign.findMany({
+      take: 3,
+      where: { status: 'ACTIVE' },
+      include: {
+        ngo: {
+          select: { name: true, district: { select: { name: true } } }
+        },
+        _count: { select: { donations: true } }
+      },
+      orderBy: { createdAt: 'desc' }
+    }),
+    prisma.campaign.count(),
+    prisma.ngo.count({ where: { status: 'VERIFIED' } }),
+    prisma.district.count()
+  ]);
 
   const districts = dbDistricts.map(d => ({
     name: d.name,
     campaigns: d.ngos.reduce((acc, n) => acc + n._count.campaigns, 0),
     emoji: d.name === 'Srinagar' ? '🏔️' : d.name === 'Baramulla' ? '🌿' : d.name === 'Anantnag' ? '🌸' : d.name === 'Kupwara' ? '🏕️' : '🌲'
   }));
-
-  const campaigns = await prisma.campaign.findMany({
-    take: 3,
-    where: { status: 'ACTIVE' },
-    include: {
-      ngo: {
-        select: { name: true, district: { select: { name: true } } }
-      },
-      _count: { select: { donations: true } }
-    },
-    orderBy: { createdAt: 'desc' }
-  });
-
-  const campaignCount = await prisma.campaign.count();
-  const ngoCount = await prisma.ngo.count({ where: { status: 'VERIFIED' } });
-  const districtCount = await prisma.district.count();
 
   const featuredCampaigns = campaigns.map(c => ({
     id: c.id.toString(),
@@ -118,51 +119,52 @@ export default async function Home() {
       {/* ===== HERO ===== */}
       <section className={styles.hero}>
         <div className={styles.heroBg}>
-          <img
-            src="https://images.unsplash.com/photo-1598305371124-4f094fea4608?q=80&w=2000&auto=format&fit=crop"
+          <Image
+            src="https://images.unsplash.com/photo-1598305371124-4f094fea4608?q=80&w=2000"
             alt="Kashmir Valley"
+            fill
+            priority
+            quality={85}
+            sizes="100vw"
+            style={{ objectFit: 'cover', opacity: 0.55, filter: 'saturate(1.1)' }}
           />
+          <div className={styles.heroMap} />
           <div className={styles.heroGradient} />
         </div>
 
         <div className={`container ${styles.heroInner} staggered-entrance`}>
           <div className={styles.heroLabel}>
             <span className={styles.pulse}></span>
-            Live Tracking Across 10 Districts
+            Tracking Across 10 Districts
           </div>
 
           <h1 className={styles.heroTitle}>
-            Balancing Care
+            Every Rupee Tracked.
             <br />
-            <span className={styles.heroTitleAccent}>Across Kashmir</span>
+            <span className={styles.heroTitleAccent}>Every Donation Verified.</span>
           </h1>
 
           <p className={styles.heroTagline}>
-            0% Platform Fees • 0% Payment Gateway Fees • Direct Deposits<br />
-            Kashmir&apos;s dedicated charity facilitator.
+            Kashmir&apos;s most transparent verified charity facilitator.
           </p>
 
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginBottom: '32px', flexWrap: 'wrap' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.1)', padding: '6px 12px', borderRadius: '50px', fontSize: '0.85rem', color: 'rgba(255,255,255,0.9)', border: '1px solid rgba(255,255,255,0.2)' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-              100% Secure
+          <div className={styles.trustStrip}>
+            <span className={styles.trustItem}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10" /><path d="M12 8v4l3 3" /></svg>
+              0% Platform Fees
             </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.1)', padding: '6px 12px', borderRadius: '50px', fontSize: '0.85rem', color: 'rgba(255,255,255,0.9)', border: '1px solid rgba(255,255,255,0.2)' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
-              Verified NGOs
-            </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.1)', padding: '6px 12px', borderRadius: '50px', fontSize: '0.85rem', color: 'rgba(255,255,255,0.9)', border: '1px solid rgba(255,255,255,0.2)' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
-              Direct Bank Transfers
+            <span className={styles.trustItem}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
+              0% Gateway Fees
             </span>
           </div>
 
           <div className={styles.statsRow}>
             {[
-              { label: 'NGOs', value: `${ngoCount}+` },
-              { label: 'Campaigns', value: `${campaignCount}+` },
-              { label: 'Funds Tracked', value: '₹12.5L' },
-              { label: 'Districts', value: `${districtCount}` },
+              { label: 'Verified NGOs', value: '2+' },
+              { label: 'Active Campaigns', value: '4+' },
+              { label: 'Funds Tracked', value: '₹12.5L+' },
+              { label: 'Districts Covered', value: '10' },
             ].map(s => (
               <div key={s.label} className={styles.statPill}>
                 <span className={`${styles.statValue} font-mono`}>{s.value}</span>
@@ -172,12 +174,13 @@ export default async function Home() {
           </div>
 
           <div className={styles.heroCta}>
-            <Link href="/campaigns" className="btn-accent" style={{ fontSize: '1rem', padding: '15px 36px', borderRadius: '50px', display: 'inline-flex', alignItems: 'center', gap: '8px', fontWeight: 700 }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.59l-1.42-1.3C5.4 15.36 2 12.27 2 8.5 2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.58 11.79L12 21.59z" /></svg>
+            <Link href="/campaigns" className="btn-accent" style={{ fontSize: '1rem', padding: '16px 40px', borderRadius: '50px', display: 'inline-flex', alignItems: 'center', gap: '10px', fontWeight: 700 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.59l-1.42-1.3C5.4 15.36 2 12.27 2 8.5 2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.58 11.79L12 21.59z" /></svg>
               Donate to a Cause
             </Link>
-            <Link href="/ngo" className={styles.heroSecondaryBtn}>
-              NGO Portal →
+            <Link href="/ngo/login" className={styles.heroSecondaryBtn}>
+              NGO Portal
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
             </Link>
           </div>
         </div>
@@ -193,7 +196,7 @@ export default async function Home() {
           <div className={styles.sectionHead}>
             <span className="section-label">Active Now</span>
             <h2 className="section-title">Featured Campaigns</h2>
-            <p className="section-subtitle">Curated urgent causes across Kashmir — making a real difference.</p>
+            <p className="section-subtitle" style={{ textAlign: 'center', margin: '0 auto' }}>Curated urgent causes across Kashmir — making a real difference.</p>
           </div>
           <div className={styles.campaignsGrid}>
             {featuredCampaigns.map(c => (
@@ -236,7 +239,7 @@ export default async function Home() {
           <div className={styles.sectionHead}>
             <span className="section-label">Explore</span>
             <h2 className="section-title">District Explorer</h2>
-            <p className="section-subtitle">Browse active campaigns across all 10 districts of Kashmir Valley.</p>
+            <p className="section-subtitle" style={{ textAlign: 'center', margin: '0 auto' }}>Browse active campaigns across all 10 districts of Kashmir Valley.</p>
           </div>
           <div className={styles.districtGrid}>
             {districts.map(d => (
@@ -256,7 +259,7 @@ export default async function Home() {
           <div className={styles.sectionHead}>
             <span className="section-label">Process</span>
             <h2 className="section-title">How Mizaan Works</h2>
-            <p className="section-subtitle" style={{ margin: '0 auto', maxWidth: '600px', textAlign: 'center' }}>A transparent, three-step system that puts aid directly in the right hands. 0% Platform Fees, 0% Payment Gateway Fees. Direct deposits to NGO accounts.</p>
+            <p className="section-subtitle" style={{ margin: '0 auto', maxWidth: '600px', textAlign: 'center' }}>A transparent, three-step system that puts aid directly in the right hands. 0% Platform Fees, 0% Payment Gateway Fees.</p>
           </div>
           <div className={styles.stepsGrid}>
             {steps.map((step, i) => (
@@ -280,7 +283,7 @@ export default async function Home() {
               <span className="section-label">Built For Kashmir</span>
               <h2 className="section-title" style={{ color: 'white' }}>Built on<br />Transparency</h2>
               <p style={{ color: 'rgba(255,255,255,0.7)', lineHeight: '1.7', marginBottom: '2rem', maxWidth: '420px' }}>
-                Mizaan exists to bridge the gap between generous donors and trusted NGOs, with zero friction and full accountability.
+                Mizaan exists to bridge the gap between generous donors and trusted NGOs, with less friction and full accountability.
               </p>
               <Link href="/transparency" className="btn-accent" style={{ display: 'inline-block', borderRadius: '50px', padding: '13px 32px' }}>
                 View Public Ledger

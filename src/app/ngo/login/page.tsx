@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function NgoSignInPage() {
     const [email, setEmail] = useState('');
@@ -8,6 +9,7 @@ export default function NgoSignInPage() {
     const [loading, setLoading] = useState(false);
 
     const [error, setError] = useState('');
+    const router = useRouter();
 
     const handleSignIn = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -34,8 +36,8 @@ export default function NgoSignInPage() {
                 throw new Error(data.error || 'Failed to sign in');
             }
 
-            // Redirect based on role if possible, else default
-            window.location.href = data.redirect || '/ngo/dashboard';
+            // Redirect based on role
+            router.push(data.redirect || '/ngo/dashboard');
         } catch (err: any) {
             setError(err.message);
             setLoading(false);
